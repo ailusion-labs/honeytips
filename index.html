@@ -256,7 +256,7 @@ footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
       <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">과세표준 구간</div>
       <div id="s-bk"></div>
     </div>
-    <p class="note">* 2024년 기준, 미혼·부양가족 없음·비과세 없음. 실제 수령액은 개인 상황에 따라 다를 수 있습니다.</p>
+    <p class="note">* 2026년 기준, 미혼·부양가족 없음·비과세 없음. 실제 수령액은 개인 상황에 따라 다를 수 있습니다.</p>
   </div>
 </div>
 
@@ -279,8 +279,8 @@ footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
     <div id="p-ins" style="display:none;">
       <div class="ins-auto">
         <div class="ins-title">4대보험 <span class="ins-badge">자동계산</span></div>
-        <div class="ins-row"><span>국민연금 (소득의 9%)</span><span class="iv" id="p-pen">-</span></div>
-        <div class="ins-row"><span>건강보험 (소득의 7.09%)</span><span class="iv" id="p-hlt">-</span></div>
+        <div class="ins-row"><span>국민연금 (소득의 9.5%)</span><span class="iv" id="p-pen">-</span></div>
+        <div class="ins-row"><span>건강보험 (소득의 7.19%)</span><span class="iv" id="p-hlt">-</span></div>
         <div class="ins-row"><span>장기요양 (건보 × 12.95%)</span><span class="iv" id="p-ltc">-</span></div>
         <div class="ins-row" style="color:var(--text3);"><span>고용보험 (임의가입)</span><span>미포함</span></div>
         <div class="ins-total"><span>4대보험 합계</span><span id="p-ins-tot">-</span></div>
@@ -392,7 +392,7 @@ footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
       </tr></thead><tbody id="g-tbody"></tbody></table>
     </div>
   </div>
-  <p class="note">* 2024년 기준 근로소득세 간이 계산. 투자 수익률은 세전·연복리 기준.</p>
+  <p class="note">* 2026년 기준 근로소득세 간이 계산. 투자 수익률은 세전·연복리 기준.</p>
 </div>
 
 <!-- ══════ TAB 3 — 복리 ══════ -->
@@ -494,7 +494,7 @@ footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
     각 계산기는 서로 연결됩니다. 실수령 계산기로 월 실수령을 확인하고 → 목표달성 계산기에 연봉을 입력하면 달성 시기가 자동 계산됩니다. 손익 계산기의 순이익을 복리 계산기 초기 투자금으로 활용해보세요.
   </div>
 
-  <p class="note" style="text-align:center;margin-top:16px;">모든 계산은 참고용이며 실제와 다를 수 있습니다. 세율은 2024년 기준입니다.</p>
+  <p class="note" style="text-align:center;margin-top:16px;">모든 계산은 참고용이며 실제와 다를 수 있습니다. 세율은 2026년 기준입니다.</p>
 </div>
 
 <footer><p>© 2026 HoneyTips🍯 — 모든 계산은 참고용이며 실제와 다를 수 있습니다.</p></footer>
@@ -507,7 +507,7 @@ const fS = v => {const a=Math.abs(v),e=Math.floor(a/1e8),c=Math.floor((a%1e8)/1e
 const Pct= v => (Math.round(v*10)/10)+'%';
 
 const IND_TAX=[{l:14e6,r:.06},{l:5e7,r:.15},{l:88e6,r:.24},{l:15e7,r:.35},{l:3e8,r:.38},{l:5e8,r:.40},{l:1e9,r:.42},{l:Infinity,r:.45}];
-const CORP_TAX=[{l:2e8,r:.09},{l:2e10,r:.19},{l:3e11,r:.21},{l:Infinity,r:.24}];
+const CORP_TAX=[{l:2e8,r:.10},{l:2e10,r:.20},{l:3e11,r:.22},{l:Infinity,r:.25}];
 
 function calcTaxBracket(inc,br){if(inc<=0)return 0;let t=0,p=0;for(const b of br){if(inc<=p)break;t+=(Math.min(inc,b.l)-p)*b.r;p=b.l;}return t;}
 function calcTakehome(sal){
@@ -519,8 +519,8 @@ function calcTakehome(sal){
   let cr=tax<=1300000?tax*.55:715000+(tax-1300000)*.30;
   cr=Math.min(cr,sal<=33e6?740000:sal<=70e6?660000:500000);
   const itax=Math.max(0,Math.round(tax-cr)),ltax=Math.round(itax*.10);
-  const mo=sal/12,pen=Math.round(Math.min(mo,5900000)*.045);
-  const hlt=Math.round(mo*.03545),ltc=Math.round(hlt*.1295),emp=Math.round(mo*.009);
+  const mo=sal/12,pen=Math.round(Math.min(mo,6370000)*.0475);
+  const hlt=Math.round(mo*.03595),ltc=Math.round(hlt*.1314),emp=Math.round(mo*.009);
   const totalAnnual=itax+ltax+(pen+hlt+ltc+emp)*12;
   return{monthly:Math.round((sal-totalAnnual)/12),itax,ltax,pen,hlt,ltc,emp,totalAnnual};
 }
@@ -554,9 +554,9 @@ function sRender(){
     {label:'근로소득세',dot:'#e24b4a',a:itax,m:Math.round(itax/12),pct:itax/sal*100},
     {label:'지방소득세 (×10%)',dot:'#f09595',a:ltax,m:Math.round(ltax/12),pct:ltax/sal*100},
     {label:'세금 소계',a:itax+ltax,m:Math.round((itax+ltax)/12),pct:(itax+ltax)/sal*100,grp:true},
-    {label:'국민연금 (4.5%)',dot:'#5caa85',a:pen*12,m:pen,pct:pen*12/sal*100},
-    {label:'건강보험 (3.545%)',dot:'#73726c',a:hlt*12,m:hlt,pct:hlt*12/sal*100},
-    {label:'장기요양 (건보×12.95%)',dot:'#b4b2a9',a:ltc*12,m:ltc,pct:ltc*12/sal*100},
+    {label:'국민연금 (4.75%)',dot:'#5caa85',a:pen*12,m:pen,pct:pen*12/sal*100},
+    {label:'건강보험 (3.595%)',dot:'#73726c',a:hlt*12,m:hlt,pct:hlt*12/sal*100},
+    {label:'장기요양 (건보×13.14%)',dot:'#b4b2a9',a:ltc*12,m:ltc,pct:ltc*12/sal*100},
     {label:'고용보험 (0.9%)',dot:'#e2a04a',a:emp*12,m:emp,pct:emp*12/sal*100},
     {label:'4대보험 소계',a:(pen+hlt+ltc+emp)*12,m:pen+hlt+ltc+emp,pct:(pen+hlt+ltc+emp)*12/sal*100,grp:true},
     {label:'총 공제 합계',a:totalAnnual,m:Math.round(totalAnnual/12),pct:totalAnnual/sal*100,tot:true},
@@ -595,7 +595,7 @@ const pExpDefs={
 };
 let pV={rev:500000000};
 (function(){pExpDefs.corp.forEach(d=>pV['c_'+d.id]=d.val);pExpDefs.ind.forEach(d=>pV['i_'+d.id]=d.val);})();
-function calcInsInd(op){if(op<=0)return{pen:0,hlt:0,ltc:0,total:0};const mo=op/12,pb=Math.min(mo,5900000),pen=Math.round(pb*.09)*12,hlt=Math.round(op*.0709),ltc=Math.round(hlt*.1295);return{pen,hlt,ltc,total:pen+hlt+ltc};}
+function calcInsInd(op){if(op<=0)return{pen:0,hlt:0,ltc:0,total:0};const mo=op/12,pb=Math.min(mo,6370000),pen=Math.round(pb*.095)*12,hlt=Math.round(op*.0719),ltc=Math.round(hlt*.1314);return{pen,hlt,ltc,total:pen+hlt+ltc};}
 function pBuildSliders(){
   const defs=pIsCorp?pExpDefs.corp:pExpDefs.ind,px=pIsCorp?'c_':'i_';
   document.getElementById('p-sliders').innerHTML=defs.map((d,i)=>`<div class="srow" style="margin-bottom:${i===defs.length-1?0:18}px;"><div class="srow-top"><span class="srow-name">${d.label}</span><span class="srow-val"><span id="pv-${px+d.id}">-</span></span></div><input type="range" min="0" max="${d.max}" step="${d.step}" value="${pV[px+d.id]}" style="accent-color:${d.color};" oninput="pV['${px+d.id}']=+this.value;pRender()"></div>`).join('');
@@ -668,8 +668,8 @@ function pRender(){
     {label:'소득세',dot:'#e24b4a',a:mainTax,m:Math.round(mainTax/12),pct:mainTax/sal2*100},
     {label:'지방소득세',dot:'#f09595',a:localTax,m:Math.round(localTax/12),pct:localTax/sal2*100},
     {label:'세금 소계',a:totalTax,m:Math.round(totalTax/12),pct:totalTax/sal2*100,grp:true},
-    {label:'국민연금 (9%)',dot:'#5caa85',a:ins.pen,m:Math.round(ins.pen/12),pct:ins.pen/sal2*100},
-    {label:'건강보험 (7.09%)',dot:'#73726c',a:ins.hlt,m:Math.round(ins.hlt/12),pct:ins.hlt/sal2*100},
+    {label:'국민연금 (9.5%)',dot:'#5caa85',a:ins.pen,m:Math.round(ins.pen/12),pct:ins.pen/sal2*100},
+    {label:'건강보험 (7.19%)',dot:'#73726c',a:ins.hlt,m:Math.round(ins.hlt/12),pct:ins.hlt/sal2*100},
     {label:'장기요양 (×12.95%)',dot:'#b4b2a9',a:ins.ltc,m:Math.round(ins.ltc/12),pct:ins.ltc/sal2*100},
     {label:'4대보험 소계',a:ins.total,m:Math.round(ins.total/12),pct:ins.total/sal2*100,grp:true},
     {label:'총 공제 합계',a:totalDed,m:Math.round(totalDed/12),pct:totalDed/sal2*100,tot:true},
