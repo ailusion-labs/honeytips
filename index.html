@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HoneyTips🍯 — 재무 계산기 모음</title>
+<meta name="description" content="연봉 실수령, 사업자 손익, 목표금액 달성, 복리 계산기, IP 요율 비교. 슬라이더로 실시간 계산. 모바일 최적화.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ailusion-labs.github.io/honeytips/">
+<meta property="og:title" content="HoneyTips🍯 재무 계산기">
+<meta property="og:description" content="연봉 실수령, 손익, 목표달성, 복리 계산기, IP 요율 비교. 슬라이더로 실시간 계산. 직장인·사업자·투자자·크리에이터를 위한 재무 도구.">
+<meta property="og:image" content="https://ailusion-labs.github.io/honeytips/preview2.png">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+--bg:#F7F6F2;--surface:#FFFFFF;--surface2:#F0EdE6;
+--border:rgba(0,0,0,.10);--border2:rgba(0,0,0,.18);
+--text:#1a1916;--text2:#5a5750;--text3:#9a9590;
+--accent:#1a5cff;--accent-1:#e6edff;
+--green:#1a8a50;--green-1:#e6f5ec;
+--red:#c0341d;--red-1:#fdecEa;
+--amber:#e0b010;--amber-1:#fef3c2;
+--honey:#e8b008;--honey-1:#fff7d4;
+--purple:#6366f1;--purple-1:#eeedfe;
+--radius:14px;--radius-sm:10px;
+--shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.05);
+}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;}
+a{text-decoration:none;color:inherit;}
+.site-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:100;}
+.header-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;gap:14px;height:54px;}
+.logo{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.3px;flex-shrink:0;display:flex;align-items:center;gap:4px;}
+.tab-nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;align-items:center;}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-btn{padding:6px 12px;border-radius:20px;border:none;background:transparent;color:var(--text2);font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .18s;font-family:inherit;text-decoration:none;}
+.tab-btn:hover{background:var(--surface2);color:var(--text);}
+.tab-btn.on{background:var(--accent);color:#fff;}
+.tab-btn.honey{background:#d48806;color:#fff;font-size:14px;font-weight:700;padding:6px 14px;}
+.tab-btn.honey:hover{background:#c07a05;}
+.tab-btn.purple{background:var(--purple);color:#fff;font-size:14px;font-weight:700;padding:6px 14px;}
+.tab-btn.purple:hover{background:var(--purple);}
+.hero{text-align:center;padding:48px 20px 32px;}
+.hero-icon{font-size:48px;margin-bottom:8px;}
+.hero h1{font-size:26px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px;}
+.hero p{color:var(--text2);font-size:14px;}
+.cards{max-width:700px;margin:0 auto;padding:0 20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:box-shadow .2s,transform .2s;cursor:pointer;text-decoration:none;color:inherit;display:block;}
+.card:hover{box-shadow:var(--shadow);transform:translateY(-2px);}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card h3{font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;}
+.card p{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:14px;min-height:54px;}
+.card-preview{border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:14px;}
+.card-preview .label{font-size:11px;margin-bottom:2px;}
+.card-preview .value{font-size:20px;font-weight:700;}
+.card-link{font-size:13px;font-weight:600;}
+.card-amber .card-preview{background:var(--amber-1);}
+.card-amber .card-preview .label{color:#85640b;}
+.card-amber .card-preview .value{color:#63480b;}
+.card-amber .card-link{color:#c08a08;}
+.card-blue .card-preview{background:var(--accent-1);}
+.card-blue .card-preview .label{color:#1a5cff;}
+.card-blue .card-preview .value{color:#0c3d99;}
+.card-blue .card-link{color:#1a5cff;}
+.card-green .card-preview{background:var(--green-1);}
+.card-green .card-preview .label{color:#1a8a50;}
+.card-green .card-preview .value{color:#0d5a30;}
+.card-green .card-link{color:#1a8a50;}
+.card-red .card-preview{background:var(--red-1);}
+.card-red .card-preview .label{color:#c0341d;}
+.card-red .card-preview .value{color:#801a0d;}
+.card-red .card-link{color:#c0341d;}
+.card-featured{grid-column:1/-1;border:2px solid var(--purple);position:relative;overflow:visible;}
+.card-featured .badge{position:absolute;top:-10px;left:20px;background:var(--purple-1);color:var(--purple);font-size:11px;font-weight:700;padding:2px 12px;border-radius:20px;}
+.card-featured .inner{display:flex;gap:20px;align-items:flex-start;}
+.card-featured .inner .left{flex:1;}
+.card-featured .inner .right{flex:1;display:flex;flex-direction:column;gap:8px;}
+.card-featured .prev-net{background:var(--purple-1);border-radius:var(--radius-sm);padding:10px 14px;}
+.card-featured .prev-net .label{font-size:11px;color:var(--purple);}
+.card-featured .prev-net .value{font-size:18px;font-weight:700;color:#3c3489;}
+.card-featured .prev-gross{background:#e1f5ee;border-radius:var(--radius-sm);padding:10px 14px;}
+.card-featured .prev-gross .label{font-size:11px;color:#0f6e56;}
+.card-featured .prev-gross .value{font-size:18px;font-weight:700;color:#085041;}
+.card-featured .card-link{color:var(--purple);}
+.tip-box{max-width:700px;margin:0 auto 32px;padding:0 20px;}
+.tip-box-inner{background:var(--surface2);border-radius:var(--radius-sm);padding:16px 20px;}
+.tip-box-inner h4{font-size:14px;font-weight:600;margin-bottom:4px;}
+.tip-box-inner p{font-size:12px;color:var(--text2);line-height:1.6;}
+.footer{text-align:center;padding:16px 20px 32px;font-size:11px;color:var(--text3);}
+@media(max-width:600px){
+.cards{grid-template-columns:1fr;}
+.card-featured .inner{flex-direction:column;}
+.hero h1{font-size:22px;}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+<div class="header-inner">
+<div class="logo">HoneyTips 🍯</div>
+<nav class="tab-nav">
+<a href="index.html" class="tab-btn honey">재무 계산기</a>
+<a href="calculator.html#salary" class="tab-btn">실수령</a>
+<a href="calculator.html#goal" class="tab-btn">목표달성</a>
+<a href="calculator.html#profit" class="tab-btn">손익(법인/개인)</a>
+<a href="calculator.html#compound" class="tab-btn">복리</a>
+<a href="ip-calculator.html" class="tab-btn purple">IP 요율</a>
+</nav>
+</div>
+</header>
+
+<section class="hero">
+<div class="hero-icon">🍯</div>
+<h1>HoneyTips 재무 계산기</h1>
+<p>슬라이더 하나로 실시간 계산</p>
+<p>직장인 · 사업자 · 투자자 · 크리에이터를 위한 재무 도구</p>
+</section>
+
+<div class="cards">
+<a href="calculator.html#salary" class="card card-amber">
+<div class="card-icon">💰</div>
+<h3>연봉 실수령 계산기</h3>
+<p>세금·4대보험을 항목별로 계산해 실제 통장에 들어오는 금액을 확인하세요.</p>
+<div class="card-preview">
+<div class="label">월 실수령 (연봉 1억 기준)</div>
+<div class="value">635만원/월</div>
+</div>
+<div class="card-link">계산하러 가기 →</div>
+</a>
+
+<a href="calculator.html#profit" class="card card-blue">
+<div class="card-icon">📊</div>
+<h3>손익 계산기</h3>
+<p>법인·개인사업자 세금과 순이익을 매출·비용 조정으로 실시간 확인하세요.</p>
+<div class="card-preview">
+<div class="label">세후 순이익 (매출 5억 기준)</div>
+<div class="value">1.7억원</div>
+</div>
+<div class="card-link">계산하러 가기 →</div>
+</a>
+
+<a href="calculator.html#goal" class="card card-green">
+<div class="card-icon">🎯</div>
+<h3>목표달성 계산기</h3>
+<p>연봉·지출·수익률을 입력하면 목표 금액까지 몇 년 걸리는지 계산합니다.</p>
+<div class="card-preview">
+<div class="label">10억 달성까지</div>
+<div class="value">23년 7개월</div>
+</div>
+<div class="card-link">계산하러 가기 →</div>
+</a>
+
+<a href="calculator.html#compound" class="card card-red">
+<div class="card-icon">📈</div>
+<h3>복리 계산기</h3>
+<p>복리의 마법을 시각화합니다. 투자금·이율·기간을 바꾸며 미래 자산을 확인하세요.</p>
+<div class="card-preview">
+<div class="label">1억 × 7% × 20년</div>
+<div class="value">1억 1천만원</div>
+</div>
+<div class="card-link">계산하러 가기 →</div>
+</a>
+
+<a href="ip-calculator.html" class="card card-featured">
+<div class="badge">NEW</div>
+<div class="inner">
+<div class="left">
+<div class="card-icon">⚖️</div>
+<h3>IP 요율 비교 계산기</h3>
+<p>콘텐츠 계약 시 Gross와 Net 중 어떤 조건이 유리한지 한눈에 비교합니다. 공제 항목·분배 비율·매출별 손익 분기점까지.</p>
+<div class="card-link">계산하러 가기 →</div>
+</div>
+<div class="right">
+<div class="prev-net">
+<div class="label">Net 30:70 IP권자 몫</div>
+<div class="value">₩1,200만</div>
+</div>
+<div class="prev-gross">
+<div class="label">Gross 10% IP권자 몫</div>
+<div class="value">₩1,000만</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+
+<div class="tip-box">
+<div class="tip-box-inner">
+<h4>💡 꿀팁</h4>
+<p>각 계산기는 서로 연결됩니다. 실수령 계산기로 월 실수령을 확인하고 → 목표달성 계산기에 연봉을 입력하면 달성 시기가 자동 계산됩니다. 손익 계산기의 순이익을 복리 계산기 초기 투자금으로 활용해보세요. IP 요율 비교 계산기로 계약 조건별 수익을 비교해보세요.</p>
+</div>
+</div>
+
+<footer class="footer">
+모든 계산은 참고용이며 실제와 다를 수 있습니다. 세율은 2026년 기준입니다.
+</footer>
+</body>
+</html>
