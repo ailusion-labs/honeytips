@@ -45,10 +45,10 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .tab-btn:hover{background:var(--surface2);color:var(--text);}
 .tab-btn.on{background:var(--accent);color:#fff;}
 .tab-btn.honey.on{background:var(--honey);color:#fff;}
-.tab-btn.honey{font-size:15px;font-weight:700;letter-spacing:-.3px;}
+.tab-btn.honey{font-size:14px;font-weight:700;letter-spacing:-.3px;background:#d48806;color:#fff;}
 
 /* page */
-.page{display:none;padding:22px 20px 48px;max-width:700px;margin:0 auto;}
+.page{display:none;padding:22px 20px 16px;max-width:700px;margin:0 auto;}
 .page.on{display:block;animation:fadeUp .28s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
@@ -164,7 +164,7 @@ table.dt tr:last-child td{border-bottom:none;}
 .hub-tip{background:var(--honey-l);border:1px solid rgba(232,144,10,.2);border-radius:var(--radius-sm);padding:14px 16px;font-size:12px;color:#7a5008;line-height:1.7;}
 .hub-tip strong{font-weight:700;}
 
-footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
+footer{text-align:center;font-size:12px;color:var(--text3);padding:12px 0 20px;}
 
 /* mobile */
 @media(max-width:480px){
@@ -173,7 +173,7 @@ footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
   .logo{font-size:13px;}
   .logo-icon{font-size:16px;}
   .tab-btn{padding:5px 9px;font-size:11.5px;}
-  .page{padding:14px 12px 36px;}
+  .page{padding:14px 12px 12px;}
   .card{padding:14px 14px;margin-bottom:8px;}
   .srow-name{font-size:12px;}
   .srow-val{font-size:14px;}
@@ -197,7 +197,7 @@ footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
   .hub-title{font-size:22px;}
   .note{font-size:10px;}
   .bb{font-size:10px;}
-  footer{font-size:11px;padding:20px 12px 32px;}
+  footer{font-size:11px;padding:10px 12px 16px;}
 }
 @media(max-width:360px){
   .sg3{grid-template-columns:1fr 1fr;}
@@ -212,17 +212,18 @@ footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
   <div class="header-inner">
     <div class="logo">HoneyTips<span class="logo-icon">🍯</span></div>
     <nav class="tab-nav">
-      <button class="tab-btn honey on" onclick="showTab(4)">재무 계산기</button>
-      <button class="tab-btn"          onclick="showTab(0)">실수령</button>
+      <a class="tab-btn honey" href="index.html" style="text-decoration:none;">재무 계산기</a>
+      <button class="tab-btn on"       onclick="showTab(0)">실수령</button>
       <button class="tab-btn"          onclick="showTab(2)">목표달성</button>
       <button class="tab-btn"          onclick="showTab(1)">손익(법인/개인)</button>
       <button class="tab-btn"          onclick="showTab(3)">복리</button>
+      <a class="tab-btn" href="ip-calculator.html" style="text-decoration:none;background:#6366f1;color:#fff;font-size:13px;font-weight:700;padding:6px 14px;">IP 요율</a>
     </nav>
   </div>
 </header>
 
 <!-- ══════ TAB 0 — 실수령 ══════ -->
-<div class="page" id="tab0">
+<div class="page on" id="tab0">
   <div class="card">
     <div class="card-label">연봉 입력</div>
     <div class="srow">
@@ -435,68 +436,6 @@ footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
   </div>
 </div>
 
-<!-- ══════ TAB 4 — 종합 계산기 ══════ -->
-<div class="page on" id="tab4">
-  <div class="hub-hero">
-    <div class="hub-icon">🍯</div>
-    <div class="hub-title">HoneyTips 재무 계산기</div>
-    <div class="hub-sub">슬라이더 하나로 실시간 계산<br>직장인·사업자·투자자 모두를 위한 재무 도구</div>
-  </div>
-
-  <div class="hub-grid">
-    <div class="hub-card" onclick="showTab(0)">
-      <div class="hc-icon">💰</div>
-      <div class="hc-name">연봉 실수령 계산기</div>
-      <div class="hc-desc">세금·4대보험을 항목별로 계산해 실제 통장에 들어오는 금액을 확인하세요.</div>
-      <div style="background:var(--accent-l);border-radius:8px;padding:10px 12px;">
-        <div class="hc-label">월 실수령 (연봉 1억 기준)</div>
-        <div class="hc-val" id="hub-netm" style="color:var(--accent);">계산 중...</div>
-      </div>
-      <button class="hub-btn">계산하러 가기 →</button>
-    </div>
-
-    <div class="hub-card" onclick="showTab(1)">
-      <div class="hc-icon">📊</div>
-      <div class="hc-name">손익 계산기</div>
-      <div class="hc-desc">법인·개인사업자 세금과 순이익을 매출·비용 조정으로 실시간 확인하세요.</div>
-      <div style="background:var(--green-l);border-radius:8px;padding:10px 12px;">
-        <div class="hc-label">세후 순이익 (매출 5억 기준)</div>
-        <div class="hc-val" id="hub-netop" style="color:var(--green);">계산 중...</div>
-      </div>
-      <button class="hub-btn">계산하러 가기 →</button>
-    </div>
-
-    <div class="hub-card" onclick="showTab(2)">
-      <div class="hc-icon">🎯</div>
-      <div class="hc-name">목표달성 계산기</div>
-      <div class="hc-desc">연봉·지출·수익률을 입력하면 목표 금액까지 몇 년 걸리는지 계산합니다.</div>
-      <div style="background:#ede8fc;border-radius:8px;padding:10px 12px;">
-        <div class="hc-label">10억 달성까지</div>
-        <div class="hc-val" id="hub-goal" style="color:#7c5dd4;">계산 중...</div>
-      </div>
-      <button class="hub-btn">계산하러 가기 →</button>
-    </div>
-
-    <div class="hub-card" onclick="showTab(3)">
-      <div class="hc-icon">📈</div>
-      <div class="hc-name">복리 계산기</div>
-      <div class="hc-desc">복리의 마법을 시각화합니다. 투자금·이율·기간을 바꾸며 미래 자산을 확인하세요.</div>
-      <div style="background:var(--amber-l);border-radius:8px;padding:10px 12px;">
-        <div class="hc-label">1억 × 7% × 20년</div>
-        <div class="hc-val" id="hub-compound" style="color:var(--amber);">계산 중...</div>
-      </div>
-      <button class="hub-btn">계산하러 가기 →</button>
-    </div>
-  </div>
-
-  <div class="hub-tip">
-    <strong>💡 꿀팁</strong><br>
-    각 계산기는 서로 연결됩니다. 실수령 계산기로 월 실수령을 확인하고 → 목표달성 계산기에 연봉을 입력하면 달성 시기가 자동 계산됩니다. 손익 계산기의 순이익을 복리 계산기 초기 투자금으로 활용해보세요.
-  </div>
-
-  <p class="note" style="text-align:center;margin-top:16px;">모든 계산은 참고용이며 실제와 다를 수 있습니다. 세율은 2026년 기준입니다.</p>
-</div>
-
 <footer><p>© 2026 HoneyTips🍯 — 모든 계산은 참고용이며 실제와 다를 수 있습니다.</p></footer>
 
 <script>
@@ -526,15 +465,22 @@ function calcTakehome(sal){
 }
 
 let activeTab=0;
-const TAB_MAP=[4,0,2,1,3];
+const HASH_MAP={salary:0,profit:1,goal:2,compound:3};
+const TAB_NAMES=['salary','profit','goal','compound'];
 function showTab(pageId){
   document.querySelectorAll('.page').forEach((p,j)=>p.classList.toggle('on',pageId===j));
-  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('on',TAB_MAP[j]===pageId));
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.tagName==='A')return;
+    b.classList.remove('on');
+  });
+  var btns=document.querySelectorAll('button.tab-btn');
+  var btnMap=[0,2,1,3];
+  btns.forEach((b,j)=>{b.classList.toggle('on',btnMap[j]===pageId);});
   activeTab=pageId;
   if(pageId===1&&!pInited){pBuildSliders();pRender();pInited=true;}
   if(pageId===2&&!gInited){gRender();gInited=true;}
   if(pageId===3&&!cInited){cRender();cInited=true;}
-  if(pageId===4){updateHub();}
+  try{history.replaceState(null,'','#'+TAB_NAMES[pageId]);}catch(e){}
 }
 
 /* ═══ TAB 0 실수령 ═══ */
@@ -760,25 +706,16 @@ function cRender(){
   cChart=new Chart(document.getElementById('cChart'),{type:'line',data:{labels,datasets:[{label:'복리',data:compound,borderColor:'#1a5cff',backgroundColor:'rgba(26,92,255,.07)',fill:true,tension:.35,pointRadius:0,borderWidth:2.5},{label:'단리',data:simple,borderColor:'#e2a04a',backgroundColor:'transparent',fill:false,tension:0,pointRadius:0,borderWidth:1.5,borderDash:[5,4]},{label:'원금',data:principal,borderColor:'#c0bdb6',backgroundColor:'transparent',fill:false,tension:0,pointRadius:0,borderWidth:1,borderDash:[3,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+Ws(ctx.raw)+'원'}}},scales:{x:{grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},maxTicksLimit:8}},y:{min:0,max:maxY,grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},callback:v=>Ws(v)}}}}});
 }
 
-/* ═══ TAB 4 종합 ═══ */
-function updateHub(){
-  const{monthly}=calcTakehome(100000000);
-  document.getElementById('hub-netm').textContent=Ws(monthly)+'원/월';
-  const rev5=500000000,exp5=310000000,op5=rev5-exp5;
-  const t5=calcTaxBracket(Math.max(op5,0),CORP_TAX)*1.1;
-  document.getElementById('hub-netop').textContent=Ws(op5-t5)+'원';
-  const{gM}=gSimulate(calcTakehome(60000000).monthly-2000000,0,5,80,1000000000);
-  document.getElementById('hub-goal').textContent=gM>0?(Math.floor(gM/12)+'년 '+gM%12+'개월'):MAX_Y+'년+';
-  const P=1e8,r=0.07/100/12,Y=20,n=12;let comp=P*Math.pow(1+r*n,n*Y);
-  document.getElementById('hub-compound').textContent=fS(Math.round(comp));
-}
-
 /* ═══ INIT ═══ */
 sRender();
 pBuildSliders();pRender();pInited=true;
 gRender();gInited=true;
 cRender();cInited=true;
-updateHub();
+(function(){
+  var hash=location.hash.replace('#','');
+  if(hash&&HASH_MAP[hash]!==undefined){showTab(HASH_MAP[hash]);}
+  else{showTab(0);}
+})();
 </script>
 </body>
 </html>
