@@ -280,8 +280,8 @@ footer{text-align:center;font-size:12px;color:var(--text3);padding:12px 0 20px;}
     <div id="p-ins" style="display:none;">
       <div class="ins-auto">
         <div class="ins-title">4대보험 <span class="ins-badge">자동계산</span></div>
-        <div class="ins-row"><span>국민연금 (소득의 9.5%)</span><span class="iv" id="p-pen">-</span></div>
-        <div class="ins-row"><span>건강보험 (소득의 7.19%)</span><span class="iv" id="p-hlt">-</span></div>
+        <div class="ins-row"><span>국민연금 (소득의 9%)</span><span class="iv" id="p-pen">-</span></div>
+        <div class="ins-row"><span>건강보험 (소득의 7.09%)</span><span class="iv" id="p-hlt">-</span></div>
         <div class="ins-row"><span>장기요양 (건보 × 12.95%)</span><span class="iv" id="p-ltc">-</span></div>
         <div class="ins-row" style="color:var(--text3);"><span>고용보험 (임의가입)</span><span>미포함</span></div>
         <div class="ins-total"><span>4대보험 합계</span><span id="p-ins-tot">-</span></div>
@@ -541,7 +541,7 @@ const pExpDefs={
 };
 let pV={rev:500000000};
 (function(){pExpDefs.corp.forEach(d=>pV['c_'+d.id]=d.val);pExpDefs.ind.forEach(d=>pV['i_'+d.id]=d.val);})();
-function calcInsInd(op){if(op<=0)return{pen:0,hlt:0,ltc:0,total:0};const mo=op/12,pb=Math.min(mo,6370000),pen=Math.round(pb*.095)*12,hlt=Math.round(op*.0719),ltc=Math.round(hlt*.1314);return{pen,hlt,ltc,total:pen+hlt+ltc};}
+function calcInsInd(op){if(op<=0)return{pen:0,hlt:0,ltc:0,total:0};const mo=op/12,pb=Math.min(mo,6370000),pen=Math.round(pb*.09)*12,hlt=Math.round(op*.0709),ltc=Math.round(hlt*.1295);return{pen,hlt,ltc,total:pen+hlt+ltc};}
 function pBuildSliders(){
   const defs=pIsCorp?pExpDefs.corp:pExpDefs.ind,px=pIsCorp?'c_':'i_';
   document.getElementById('p-sliders').innerHTML=defs.map((d,i)=>`<div class="srow" style="margin-bottom:${i===defs.length-1?0:18}px;"><div class="srow-top"><span class="srow-name">${d.label}</span><span class="srow-val"><span id="pv-${px+d.id}">-</span></span></div><input type="range" min="0" max="${d.max}" step="${d.step}" value="${pV[px+d.id]}" style="accent-color:${d.color};" oninput="pV['${px+d.id}']=+this.value;pRender()"></div>`).join('');
@@ -614,8 +614,8 @@ function pRender(){
     {label:'소득세',dot:'#e24b4a',a:mainTax,m:Math.round(mainTax/12),pct:mainTax/sal2*100},
     {label:'지방소득세',dot:'#f09595',a:localTax,m:Math.round(localTax/12),pct:localTax/sal2*100},
     {label:'세금 소계',a:totalTax,m:Math.round(totalTax/12),pct:totalTax/sal2*100,grp:true},
-    {label:'국민연금 (9.5%)',dot:'#5caa85',a:ins.pen,m:Math.round(ins.pen/12),pct:ins.pen/sal2*100},
-    {label:'건강보험 (7.19%)',dot:'#73726c',a:ins.hlt,m:Math.round(ins.hlt/12),pct:ins.hlt/sal2*100},
+    {label:'국민연금 (9%)',dot:'#5caa85',a:ins.pen,m:Math.round(ins.pen/12),pct:ins.pen/sal2*100},
+    {label:'건강보험 (7.09%)',dot:'#73726c',a:ins.hlt,m:Math.round(ins.hlt/12),pct:ins.hlt/sal2*100},
     {label:'장기요양 (×12.95%)',dot:'#b4b2a9',a:ins.ltc,m:Math.round(ins.ltc/12),pct:ins.ltc/sal2*100},
     {label:'4대보험 소계',a:ins.total,m:Math.round(ins.total/12),pct:ins.total/sal2*100,grp:true},
     {label:'총 공제 합계',a:totalDed,m:Math.round(totalDed/12),pct:totalDed/sal2*100,tot:true},
