@@ -3,337 +3,227 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HoneyTips🍯 — 복리·실수령·손익·목표 계산기</title>
-<meta name="description" content="복리 계산기, 연봉 실수령 계산기, 사업자 손익 계산기, 목표금액 달성 계산기. 슬라이더로 실시간 계산.">
+<title>HoneyTips🍯 — 재무 계산기 모음</title>
+<meta name="description" content="연봉 실수령, 사업자 손익, 목표금액 달성, 복리 계산기. 슬라이더로 실시간 계산. 모바일 최적화.">
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-/* ── reset & base ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:       #f7f6f2;
-  --surface:  #ffffff;
-  --surface2: #f0ede8;
-  --border:   rgba(0,0,0,.10);
-  --border2:  rgba(0,0,0,.18);
-  --text:     #1a1916;
-  --text2:    #5a5750;
-  --text3:    #9a9590;
-  --accent:   #1a5cff;
-  --accent-l: #e6edff;
-  --green:    #1a8a50;
-  --green-l:  #e6f5ec;
-  --red:      #c0341d;
-  --red-l:    #fdecea;
-  --amber:    #a06010;
-  --amber-l:  #fef3e2;
-  --radius:   14px;
-  --radius-sm: 8px;
-  --shadow:   0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.05);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f7f6f2;--surface:#ffffff;--surface2:#f0ede8;
+  --border:rgba(0,0,0,.10);--border2:rgba(0,0,0,.18);
+  --text:#1a1916;--text2:#5a5750;--text3:#9a9590;
+  --accent:#1a5cff;--accent-l:#e6edff;
+  --green:#1a8a50;--green-l:#e6f5ec;
+  --red:#c0341d;--red-l:#fdecea;
+  --amber:#a06010;--amber-l:#fef3e2;
+  --honey:#e8900a;--honey-l:#fff3dc;
+  --radius:14px;--radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.05);
 }
-body {
-  font-family: 'Pretendard', -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 15px;
-  line-height: 1.6;
+body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
+
+/* header */
+.site-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:100;}
+.header-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;gap:14px;height:54px;}
+.logo{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px;flex-shrink:0;display:flex;align-items:center;gap:4px;}
+.logo-icon{font-size:18px;line-height:1;}
+.tab-nav{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;flex:1;}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-btn{padding:6px 12px;border-radius:20px;border:none;background:transparent;color:var(--text2);font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .18s;font-family:inherit;}
+.tab-btn:hover{background:var(--surface2);color:var(--text);}
+.tab-btn.on{background:var(--accent);color:#fff;}
+.tab-btn.honey.on{background:var(--honey);color:#fff;}
+.tab-btn.honey{font-size:15px;font-weight:700;letter-spacing:-.3px;}
+
+/* page */
+.page{display:none;padding:22px 20px 48px;max-width:700px;margin:0 auto;}
+.page.on{display:block;animation:fadeUp .28s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;box-shadow:var(--shadow);}
+.card-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px;}
+
+/* slider row */
+.srow{margin-bottom:18px;}
+.srow:last-child{margin-bottom:0;}
+.srow-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;}
+.srow-name{font-size:13px;color:var(--text2);}
+.srow-val{font-size:16px;font-weight:700;color:var(--text);}
+.unit{font-size:12px;font-weight:400;color:var(--text3);margin-left:2px;}
+input[type=range]{width:100%;height:4px;appearance:none;-webkit-appearance:none;border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--surface);border:2px solid;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer;}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--surface);border:2px solid;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer;}
+
+/* stat grids */
+.sg2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px;}
+.sg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px;}
+.sc{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;}
+.sc .sl{font-size:11px;color:var(--text3);margin-bottom:4px;}
+.sc .sv{font-size:17px;font-weight:700;color:var(--text);}
+.sc .sv.blue{color:var(--accent);}
+.sc .sv.green{color:var(--green);}
+.sc .sv.red{color:var(--red);}
+.sc .sv.amber{color:var(--amber);}
+.sc .sv2{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* hero */
+.hero{background:var(--surface);border:2px solid var(--accent);border-radius:var(--radius);padding:24px 20px;margin-bottom:12px;text-align:center;}
+.hero .hlbl{font-size:12px;color:var(--text2);margin-bottom:6px;}
+.hero .hval{font-size:36px;font-weight:700;color:var(--accent);line-height:1.1;letter-spacing:-1px;}
+.hero .hsub{font-size:13px;color:var(--text3);margin-top:6px;}
+.hero .herr{font-size:20px;font-weight:700;color:var(--red);}
+
+/* chart */
+.chart-wrap{position:relative;width:100%;height:280px;}
+
+/* legend */
+.leg{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.leg span{display:flex;align-items:center;gap:5px;}
+.ldot{width:12px;height:3px;border-radius:2px;display:inline-block;flex-shrink:0;}
+
+/* table */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table.dt{width:100%;border-collapse:collapse;font-size:13px;min-width:360px;}
+table.dt thead{background:var(--surface2);}
+table.dt th{padding:8px 10px;text-align:left;color:var(--text2);font-weight:600;font-size:11px;border-bottom:1px solid var(--border);}
+table.dt th.r{text-align:right;}
+table.dt td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);font-size:12px;}
+table.dt td.r{text-align:right;font-variant-numeric:tabular-nums;}
+table.dt td.muted{color:var(--text2);}
+table.dt tr.grp td{background:var(--surface2);font-weight:600;font-size:12px;color:var(--text2);}
+table.dt tr.net td{font-weight:700;color:var(--accent);background:var(--accent-l);}
+table.dt tr.tot td{font-weight:600;}
+table.dt tr:last-child td{border-bottom:none;}
+.dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px;flex-shrink:0;}
+
+/* segment bar */
+.seg-bar{display:flex;width:100%;height:52px;border-radius:8px;overflow:hidden;margin-bottom:6px;}
+.seg{height:100%;transition:width .3s ease;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.seg-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,.93);white-space:nowrap;text-align:center;line-height:1.4;pointer-events:none;}
+.lgd-big{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:6px;font-size:12px;color:var(--text2);}
+.lgd-big span{display:flex;align-items:center;gap:4px;}
+.lgd-small{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin-top:8px;padding-top:10px;border-top:1px solid var(--border);}
+.ls-item{display:flex;align-items:center;gap:6px;padding:5px 8px;background:var(--surface2);border-radius:6px;}
+.ls-sw{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.ls-name{font-size:11px;color:var(--text2);flex:1;min-width:0;}
+.ls-pct{font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;}
+
+/* ins auto */
+.ins-auto{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-top:10px;}
+.ins-title{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.ins-badge{font-size:10px;padding:2px 7px;border-radius:8px;background:var(--accent-l);color:var(--accent);font-weight:700;}
+.ins-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:3px 0;}
+.ins-row .iv{color:var(--text);font-weight:600;}
+.ins-total{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--text);border-top:1px solid var(--border);margin-top:6px;padding-top:8px;}
+
+/* toggle */
+.toggle{display:flex;background:var(--surface2);border-radius:12px;padding:3px;margin-bottom:14px;border:1px solid var(--border);}
+.toggle button{flex:1;padding:10px 0;border:none;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;background:transparent;color:var(--text2);transition:all .2s;font-family:inherit;}
+.toggle button.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow);}
+
+/* bracket */
+.bk-grid{display:flex;flex-wrap:wrap;gap:4px;}
+.bk-cell{flex:1;min-width:0;padding:7px 8px;border-radius:6px;border:1px solid var(--border);}
+.bk-cell.active{background:var(--surface2);border-color:var(--border2);}
+.bk-pct{font-size:11px;font-weight:700;color:var(--text3);}
+.bk-cell.active .bk-pct{color:var(--text);}
+.bk-range{font-size:9px;color:var(--text3);margin-top:2px;}
+.bk-tax{font-size:9px;color:var(--text2);margin-top:2px;}
+
+.note{font-size:11px;color:var(--text3);line-height:1.7;margin-top:6px;}
+.bb{font-size:11px;padding:2px 10px;border-radius:10px;background:var(--surface2);color:var(--text2);margin-left:6px;font-weight:600;}
+
+/* ── 종합 계산기 탭 ── */
+.hub-hero{text-align:center;padding:28px 20px 20px;}
+.hub-icon{font-size:52px;line-height:1;margin-bottom:12px;}
+.hub-title{font-size:26px;font-weight:700;color:var(--text);letter-spacing:-0.8px;margin-bottom:6px;}
+.hub-sub{font-size:14px;color:var(--text2);line-height:1.6;}
+.hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px;}
+.hub-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 18px;box-shadow:var(--shadow);cursor:pointer;transition:all .18s;text-align:left;}
+.hub-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.hub-card .hc-icon{font-size:24px;margin-bottom:10px;}
+.hub-card .hc-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.hub-card .hc-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px;}
+.hub-card .hc-result{font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;}
+.hub-card .hc-label{font-size:10px;color:var(--text3);margin-bottom:2px;}
+.hub-card .hc-val{font-size:18px;font-weight:700;}
+.hub-btn{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--accent);font-weight:600;margin-top:10px;padding:0;background:none;border:none;cursor:pointer;font-family:inherit;}
+.hub-tip{background:var(--honey-l);border:1px solid rgba(232,144,10,.2);border-radius:var(--radius-sm);padding:14px 16px;font-size:12px;color:#7a5008;line-height:1.7;}
+.hub-tip strong{font-weight:700;}
+
+footer{text-align:center;font-size:12px;color:var(--text3);padding:28px 0 44px;}
+
+/* mobile */
+@media(max-width:480px){
+  .site-header{padding:0 12px;}
+  .header-inner{gap:8px;height:50px;}
+  .logo{font-size:13px;}
+  .logo-icon{font-size:16px;}
+  .tab-btn{padding:5px 9px;font-size:11.5px;}
+  .page{padding:14px 12px 36px;}
+  .card{padding:14px 14px;margin-bottom:8px;}
+  .srow-name{font-size:12px;}
+  .srow-val{font-size:14px;}
+  .sg3{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:8px;}
+  .sg2{gap:6px;margin-bottom:8px;}
+  .sc{padding:10px 12px;}
+  .sc .sv{font-size:15px;}
+  .sc .sl{font-size:10px;}
+  .hero{padding:18px 14px;}
+  .hero .hval{font-size:28px;}
+  .hero .herr{font-size:17px;}
+  .chart-wrap{height:210px;}
+  .seg-bar{height:42px;}
+  .seg-lbl{font-size:9px;}
+  table.dt{font-size:11px;min-width:320px;}
+  table.dt th,table.dt td{padding:6px 7px;}
+  .bk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;}
+  .hub-grid{grid-template-columns:1fr;}
+  .hub-hero{padding:20px 14px 14px;}
+  .hub-icon{font-size:42px;}
+  .hub-title{font-size:22px;}
+  .note{font-size:10px;}
+  .bb{font-size:10px;}
+  footer{font-size:11px;padding:20px 12px 32px;}
 }
-
-/* ── header ── */
-.site-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 0 24px;
-  position: sticky; top: 0; z-index: 100;
-}
-.header-inner {
-  max-width: 680px; margin: 0 auto;
-  display: flex; align-items: center; gap: 16px;
-  height: 56px;
-}
-.logo { font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: -.4px; flex-shrink: 0; }
-.logo span { color: var(--accent); }
-
-/* ── tab nav ── */
-.tab-nav {
-  display: flex; gap: 4px; overflow-x: auto;
-  scrollbar-width: none; flex: 1;
-}
-.tab-nav::-webkit-scrollbar { display: none; }
-.tab-btn {
-  padding: 6px 14px; border-radius: 20px; border: none;
-  background: transparent; color: var(--text2);
-  font-size: 13px; font-weight: 500; cursor: pointer;
-  white-space: nowrap; transition: all .18s;
-  font-family: inherit;
-}
-.tab-btn:hover { background: var(--surface2); color: var(--text); }
-.tab-btn.on { background: var(--accent); color: #fff; }
-
-/* ── page layout ── */
-.page { display: none; padding: 24px 24px 48px; max-width: 680px; margin: 0 auto; }
-.page.on { display: block; animation: fadeUp .3s ease; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-
-/* ── card ── */
-.card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 18px 20px;
-  margin-bottom: 12px; box-shadow: var(--shadow);
-}
-.card-label {
-  font-size: 11px; font-weight: 700; color: var(--text3);
-  text-transform: uppercase; letter-spacing: .08em;
-  margin-bottom: 14px;
-}
-
-/* ── slider row ── */
-.srow { margin-bottom: 18px; }
-.srow:last-child { margin-bottom: 0; }
-.srow-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
-.srow-name { font-size: 13px; color: var(--text2); }
-.srow-val { font-size: 16px; font-weight: 700; color: var(--text); }
-.srow-val .unit { font-size: 12px; font-weight: 400; color: var(--text3); margin-left: 2px; }
-input[type=range] {
-  width: 100%; height: 4px; appearance: none; -webkit-appearance: none;
-  border-radius: 2px; outline: none; cursor: pointer;
-}
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 22px; height: 22px;
-  border-radius: 50%; background: var(--surface);
-  border: 2px solid; box-shadow: 0 1px 4px rgba(0,0,0,.2); cursor: pointer;
-}
-input[type=range]::-moz-range-thumb {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: var(--surface); border: 2px solid;
-  box-shadow: 0 1px 4px rgba(0,0,0,.2); cursor: pointer;
-}
-
-/* ── stat grids ── */
-.sg2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
-.sg3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
-.sc {
-  background: var(--surface2); border-radius: var(--radius-sm);
-  padding: 12px 14px;
-}
-.sc .sl { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
-.sc .sv { font-size: 17px; font-weight: 700; color: var(--text); }
-.sc .sv.blue { color: var(--accent); }
-.sc .sv.green { color: var(--green); }
-.sc .sv.red { color: var(--red); }
-.sc .sv.amber { color: var(--amber); }
-.sc .sv2 { font-size: 11px; color: var(--text3); margin-top: 2px; }
-
-/* ── hero result ── */
-.hero {
-  background: var(--surface); border: 2px solid var(--accent);
-  border-radius: var(--radius); padding: 24px 20px;
-  margin-bottom: 12px; text-align: center;
-}
-.hero .hlbl { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
-.hero .hval { font-size: 38px; font-weight: 700; color: var(--accent); line-height: 1.1; letter-spacing: -1px; }
-.hero .hsub { font-size: 13px; color: var(--text3); margin-top: 6px; }
-.hero .herr { font-size: 20px; font-weight: 700; color: var(--red); }
-
-/* ── chart ── */
-.chart-wrap { position: relative; width: 100%; height: 280px; }
-
-/* ── legend ── */
-.leg { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; font-size: 12px; color: var(--text2); }
-.leg span { display: flex; align-items: center; gap: 5px; }
-.ldot { width: 12px; height: 3px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
-
-/* ── table ── */
-.tbl-wrap { overflow-x: auto; }
-table.dt { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 360px; }
-table.dt thead { background: var(--surface2); }
-table.dt th { padding: 8px 10px; text-align: left; color: var(--text2); font-weight: 600; font-size: 11px; border-bottom: 1px solid var(--border); }
-table.dt th.r { text-align: right; }
-table.dt td { padding: 7px 10px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 12px; }
-table.dt td.r { text-align: right; font-variant-numeric: tabular-nums; }
-table.dt td.muted { color: var(--text2); }
-table.dt tr.grp td { background: var(--surface2); font-weight: 600; font-size: 12px; color: var(--text2); }
-table.dt tr.net td { font-weight: 700; color: var(--accent); background: var(--accent-l); }
-table.dt tr.tot td { font-weight: 600; }
-table.dt tr:last-child td { border-bottom: none; }
-.dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; margin-right: 5px; flex-shrink: 0; }
-
-/* ── segment bar ── */
-.seg-bar { display: flex; width: 100%; height: 52px; border-radius: 8px; overflow: hidden; margin-bottom: 6px; }
-.seg { height: 100%; transition: width .3s ease; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.seg-lbl { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.93); white-space: nowrap; text-align: center; line-height: 1.4; pointer-events: none; }
-.lgd-big { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 6px; font-size: 12px; color: var(--text2); }
-.lgd-big span { display: flex; align-items: center; gap: 4px; }
-.lgd-small { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 4px; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
-.ls-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; background: var(--surface2); border-radius: 6px; }
-.ls-sw { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-.ls-name { font-size: 11px; color: var(--text2); flex: 1; min-width: 0; }
-.ls-pct { font-size: 11px; font-weight: 600; color: var(--text); white-space: nowrap; }
-
-/* ── ins auto ── */
-.ins-auto { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px 14px; margin-top: 10px; }
-.ins-title { font-size: 12px; color: var(--text2); font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-.ins-badge { font-size: 10px; padding: 2px 7px; border-radius: 8px; background: var(--accent-l); color: var(--accent); font-weight: 700; }
-.ins-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); padding: 3px 0; }
-.ins-row .iv { color: var(--text); font-weight: 600; }
-.ins-total { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid var(--border); margin-top: 6px; padding-top: 8px; }
-
-/* ── toggle ── */
-.toggle { display: flex; background: var(--surface2); border-radius: 12px; padding: 3px; margin-bottom: 14px; border: 1px solid var(--border); }
-.toggle button { flex: 1; padding: 10px 0; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: var(--text2); transition: all .2s; font-family: inherit; }
-.toggle button.on { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
-
-/* ── bracket ── */
-.bk-grid { display: flex; flex-wrap: wrap; gap: 4px; }
-.bk-cell { flex: 1; min-width: 0; padding: 7px 8px; border-radius: 6px; border: 1px solid var(--border); }
-.bk-cell.active { background: var(--surface2); border-color: var(--border2); }
-.bk-pct { font-size: 11px; font-weight: 700; color: var(--text3); }
-.bk-cell.active .bk-pct { color: var(--text); }
-.bk-range { font-size: 9px; color: var(--text3); margin-top: 2px; }
-.bk-tax { font-size: 9px; color: var(--text2); margin-top: 2px; }
-
-/* ── note ── */
-.note { font-size: 11px; color: var(--text3); line-height: 1.7; margin-top: 6px; }
-
-/* ── bracket badge ── */
-.bb { font-size: 11px; padding: 2px 10px; border-radius: 10px; background: var(--surface2); color: var(--text2); margin-left: 6px; font-weight: 600; }
-
-/* ── footer ── */
-footer { text-align: center; font-size: 12px; color: var(--text3); padding: 32px 0 48px; }
-footer a { color: var(--accent); text-decoration: none; }
-
-/* ── mobile responsive ── */
-@media (max-width: 480px) {
-  .site-header { padding: 0 14px; }
-  .header-inner { gap: 10px; height: 50px; }
-  .logo { font-size: 13px; }
-  .tab-btn { padding: 5px 10px; font-size: 12px; }
-  .page { padding: 14px 12px 36px; }
-  .card { padding: 14px 14px; margin-bottom: 8px; }
-  .card-label { font-size: 10px; margin-bottom: 10px; }
-  .srow { margin-bottom: 14px; }
-  .srow-name { font-size: 12px; }
-  .srow-val { font-size: 14px; }
-  .sg3 { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px; margin-bottom: 8px; }
-  .sg2 { gap: 6px; margin-bottom: 8px; }
-  .sc { padding: 10px 12px; }
-  .sc .sv { font-size: 15px; }
-  .sc .sl { font-size: 10px; }
-  .sc .sv2 { font-size: 10px; }
-  .hero { padding: 18px 14px; }
-  .hero .hval { font-size: 28px; letter-spacing: -0.5px; }
-  .hero .hlbl { font-size: 11px; }
-  .hero .hsub { font-size: 11px; }
-  .hero .herr { font-size: 16px; }
-  .chart-wrap { height: 210px; }
-  .seg-bar { height: 42px; }
-  .seg-lbl { font-size: 9px; line-height: 1.3; }
-  table.dt { font-size: 11px; min-width: 320px; }
-  table.dt th, table.dt td { padding: 6px 7px; }
-  .toggle button { font-size: 12px; padding: 9px 0; }
-  .bk-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 4px; }
-  .bk-pct { font-size: 12px; }
-  .bk-range { font-size: 9px; }
-  .bk-tax { font-size: 9px; }
-  .leg { gap: 6px 10px; font-size: 11px; }
-  .ldot { width: 10px; }
-  .lgd-big { font-size: 11px; gap: 4px 8px; }
-  .lgd-small { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 3px; }
-  .ls-item { padding: 4px 7px; }
-  .ls-name { font-size: 10px; }
-  .ls-pct { font-size: 10px; }
-  .ins-row { font-size: 11px; }
-  .ins-total { font-size: 12px; }
-  .note { font-size: 10px; }
-  .bb { font-size: 10px; padding: 2px 7px; }
-  footer { padding: 20px 12px 32px; font-size: 11px; }
-}
-@media (max-width: 360px) {
-  .sg3 { grid-template-columns: 1fr 1fr; }
-  .sc .sv { font-size: 13px; }
-  .hero .hval { font-size: 24px; }
-  .chart-wrap { height: 180px; }
-  table.dt { min-width: 300px; font-size: 10px; }
+@media(max-width:360px){
+  .sg3{grid-template-columns:1fr 1fr;}
+  .sc .sv{font-size:13px;}
+  .hero .hval{font-size:24px;}
+  .chart-wrap{height:180px;}
 }
 </style>
 </head>
 <body>
-
 <header class="site-header">
   <div class="header-inner">
-    <div class="logo">HoneyTips<span style="font-size:16px;">🍯</span></div>
+    <div class="logo">HoneyTips<span class="logo-icon">🍯</span></div>
     <nav class="tab-nav">
-      <button class="tab-btn on" onclick="showTab(0)">복리</button>
-      <button class="tab-btn" onclick="showTab(1)">실수령</button>
-      <button class="tab-btn" onclick="showTab(2)">손익</button>
-      <button class="tab-btn" onclick="showTab(3)">목표달성</button>
+      <button class="tab-btn honey on" onclick="showTab(4)">재무 계산기</button>
+      <button class="tab-btn"          onclick="showTab(0)">실수령</button>
+      <button class="tab-btn"          onclick="showTab(2)">목표달성</button>
+      <button class="tab-btn"          onclick="showTab(1)">손익(법인/개인)</button>
+      <button class="tab-btn"          onclick="showTab(3)">복리</button>
     </nav>
   </div>
 </header>
 
-<!-- ══════════════════════════════════════
-     TAB 0 — 복리 계산기
-══════════════════════════════════════ -->
-<div class="page on" id="tab0">
+<!-- ══════ TAB 0 — 실수령 ══════ -->
+<div class="page" id="tab0">
   <div class="card">
-    <div class="card-label">투자 조건</div>
+    <div class="card-label">연봉 입력</div>
     <div class="srow">
-      <div class="srow-top"><span class="srow-name">초기 투자금</span><span class="srow-val"><span id="c-vp">1억원</span></span></div>
-      <input type="range" id="c-p" min="0" max="500000000" step="10000000" value="100000000" oninput="cRender()" style="accent-color:#1a5cff;background:#dce8ff;">
-    </div>
-    <div class="srow">
-      <div class="srow-top"><span class="srow-name">연간 추가 투자금</span><span class="srow-val"><span id="c-va">0원</span></span></div>
-      <input type="range" id="c-a" min="0" max="50000000" step="1000000" value="0" oninput="cRender()" style="accent-color:#1a5cff;background:#dce8ff;">
-    </div>
-    <div class="srow">
-      <div class="srow-top"><span class="srow-name">연이율</span><span class="srow-val"><span id="c-vr">7.0</span><span class="unit">%</span></span></div>
-      <input type="range" id="c-r" min="1" max="20" step="0.5" value="7" oninput="cRender()" style="accent-color:#1a8a50;background:#d8f0e4;">
-    </div>
-    <div class="srow">
-      <div class="srow-top"><span class="srow-name">투자 기간</span><span class="srow-val"><span id="c-vy">20</span><span class="unit">년</span></span></div>
-      <input type="range" id="c-y" min="1" max="40" step="1" value="20" oninput="cRender()" style="accent-color:#a06010;background:#fef0d8;">
+      <div class="srow-top"><span class="srow-name">연봉 (세전)</span><span class="srow-val"><span id="s-vsal">1억원</span></span></div>
+      <input type="range" id="s-sal" min="20000000" max="2000000000" step="5000000" value="100000000" oninput="sRender()" style="accent-color:#1a5cff;background:#dce8ff;">
     </div>
   </div>
-
-  <div class="sg3">
-    <div class="sc"><div class="sl">원금</div><div class="sv" id="c-sp">-</div></div>
-    <div class="sc"><div class="sl">이자 수익</div><div class="sv blue" id="c-si">-</div></div>
-    <div class="sc"><div class="sl">최종 금액</div><div class="sv green" id="c-st">-</div></div>
-  </div>
-
-  <div class="card">
-    <div class="leg">
-      <span><span class="ldot" style="background:#1a5cff;"></span>복리</span>
-      <span><span class="ldot" style="background:#e2a04a;"></span>단리</span>
-      <span><span class="ldot" style="background:#c0bdb6;"></span>원금</span>
-    </div>
-    <div class="chart-wrap"><canvas id="cChart"></canvas></div>
-  </div>
-
-  <div class="card" style="margin-bottom:0;">
-    <div class="card-label">72의 법칙</div>
-    <p style="font-size:13px;color:var(--text2);">현재 이율 <strong id="c-72r" style="color:var(--text);">7%</strong>에서 원금이 2배가 되는 데 약 <strong id="c-72y" style="color:var(--accent);">10.3년</strong>이 걸립니다.</p>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     TAB 1 — 연봉 실수령 계산기
-══════════════════════════════════════ -->
-<div class="page" id="tab1">
-  <div class="card">
-    <div class="srow">
-      <div class="srow-top"><span class="srow-name">연봉</span><span class="srow-val"><span id="s-vsal">1억원</span></span></div>
-      <input type="range" id="s-sal" min="20000000" max="500000000" step="5000000" value="100000000" oninput="sRender()" style="accent-color:#1a5cff;background:#dce8ff;">
-    </div>
-  </div>
-
   <div class="sg3">
     <div class="sc"><div class="sl">월 실수령액</div><div class="sv blue" id="s-netm">-</div></div>
     <div class="sc"><div class="sl">연 실수령액</div><div class="sv blue" id="s-nety">-</div></div>
     <div class="sc"><div class="sl">실효 공제율</div><div class="sv amber" id="s-rate">-</div></div>
   </div>
-
   <div class="card">
     <div class="leg">
       <span><span class="ldot" style="background:#1a5cff;"></span>실수령</span>
@@ -346,13 +236,11 @@ footer a { color: var(--accent); text-decoration: none; }
     <div class="seg-bar" id="s-bar"></div>
     <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;"><span>0</span><span id="s-barR">-</span></div>
   </div>
-
   <div class="card">
     <div class="card-label">공제 상세 <span class="bb" id="s-bb">-</span></div>
     <table class="dt"><thead><tr>
       <th style="width:38%;">항목</th><th class="r">연간</th><th class="r">월간</th><th class="r">비율</th>
     </tr></thead><tbody id="s-tbody"></tbody></table>
-
     <div style="margin-top:14px;">
       <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">과세표준 구간</div>
       <div id="s-bk"></div>
@@ -361,23 +249,19 @@ footer a { color: var(--accent); text-decoration: none; }
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     TAB 2 — 손익계산기
-══════════════════════════════════════ -->
-<div class="page" id="tab2">
+<!-- ══════ TAB 1 — 손익(법인/개인) ══════ -->
+<div class="page" id="tab1">
   <div class="toggle">
     <button id="p-bc" class="on" onclick="pSetMode(true)">법인사업자</button>
     <button id="p-bi" onclick="pSetMode(false)">개인사업자</button>
   </div>
-
   <div class="card">
     <div class="card-label">매출</div>
     <div class="srow">
       <div class="srow-top"><span class="srow-name">총 매출액</span><span class="srow-val"><span id="p-vrev">5억원</span></span></div>
-      <input type="range" id="p-rev" min="0" max="2000000000" step="10000000" value="500000000" oninput="pV.rev=+this.value;pRender()" style="accent-color:#1a8a50;background:#d8f0e4;">
+      <input type="range" id="p-rev" min="0" max="5000000000" step="50000000" value="500000000" oninput="pV.rev=+this.value;pRender()" style="accent-color:#1a8a50;background:#d8f0e4;">
     </div>
   </div>
-
   <div class="card">
     <div class="card-label">비용</div>
     <div id="p-sliders"></div>
@@ -392,7 +276,6 @@ footer a { color: var(--accent); text-decoration: none; }
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-label">비용 구조 분석</div>
     <div class="lgd-big" id="p-lgd-big"></div>
@@ -400,7 +283,6 @@ footer a { color: var(--accent); text-decoration: none; }
     <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;"><span>0</span><span id="p-barR">-</span></div>
     <div class="lgd-small" id="p-lgd-small" style="display:none;"></div>
   </div>
-
   <div class="sg3">
     <div class="sc"><div class="sl" id="p-l1">영업이익 (세전)</div><div class="sv blue" id="p-op">-</div><div class="sv2" id="p-op2">-</div></div>
     <div class="sc"><div class="sl" id="p-l2">총 세금</div><div class="sv red" id="p-ded">-</div><div class="sv2" id="p-ded2">-</div></div>
@@ -411,7 +293,6 @@ footer a { color: var(--accent); text-decoration: none; }
     <div class="sc"><div class="sl">실효 세율</div><div class="sv amber" id="p-effr">-</div><div class="sv2" id="p-effr2">-</div></div>
     <div class="sc"><div class="sl">순이익률</div><div class="sv" id="p-mar">-</div></div>
   </div>
-
   <div class="card">
     <div class="card-label" id="p-taxlbl">법인세 상세</div>
     <table class="dt"><thead><tr>
@@ -425,60 +306,54 @@ footer a { color: var(--accent); text-decoration: none; }
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     TAB 3 — 목표달성 계산기
-══════════════════════════════════════ -->
-<div class="page" id="tab3">
+<!-- ══════ TAB 2 — 목표달성 ══════ -->
+<div class="page" id="tab2">
   <div class="card">
     <div class="card-label">목표 & 현재 자산</div>
     <div class="srow">
       <div class="srow-top"><span class="srow-name">목표 금액</span><span class="srow-val"><span id="g-vgoal">10억원</span></span></div>
-      <input type="range" id="g-goal" min="10000000" max="3000000000" step="10000000" value="1000000000" oninput="gV.goal=+this.value;gRender()" style="accent-color:#1a5cff;background:#dce8ff;">
+      <input type="range" id="g-goal" min="10000000" max="5000000000" step="50000000" value="1000000000" oninput="gV.goal=+this.value;gRender()" style="accent-color:#1a5cff;background:#dce8ff;">
     </div>
     <div class="srow">
       <div class="srow-top"><span class="srow-name">현재 보유 자산</span><span class="srow-val"><span id="g-vasset">0원</span></span></div>
-      <input type="range" id="g-asset" min="0" max="500000000" step="5000000" value="0" oninput="gV.asset=+this.value;gRender()" style="accent-color:#1a5cff;background:#dce8ff;">
+      <input type="range" id="g-asset" min="0" max="2000000000" step="10000000" value="0" oninput="gV.asset=+this.value;gRender()" style="accent-color:#1a5cff;background:#dce8ff;">
     </div>
     <div class="srow">
       <div class="srow-top"><span class="srow-name">현재 대출 잔액</span><span class="srow-val"><span id="g-vdebt">0원</span></span></div>
-      <input type="range" id="g-debt" min="0" max="1000000000" step="10000000" value="0" oninput="gV.debt=+this.value;gRender()" style="accent-color:#c0341d;background:#fdecea;">
+      <input type="range" id="g-debt" min="0" max="2000000000" step="10000000" value="0" oninput="gV.debt=+this.value;gRender()" style="accent-color:#c0341d;background:#fdecea;">
     </div>
   </div>
-
   <div class="card">
     <div class="card-label">수입 & 지출</div>
     <div class="srow">
       <div class="srow-top"><span class="srow-name">연봉 (세전)</span><span class="srow-val"><span id="g-vsal">6000만원</span></span></div>
-      <input type="range" id="g-sal" min="20000000" max="500000000" step="5000000" value="60000000" oninput="gV.sal=+this.value;gRender()" style="accent-color:#1a8a50;background:#d8f0e4;">
+      <input type="range" id="g-sal" min="20000000" max="2000000000" step="5000000" value="60000000" oninput="gV.sal=+this.value;gRender()" style="accent-color:#1a8a50;background:#d8f0e4;">
     </div>
     <div class="srow">
       <div class="srow-top"><span class="srow-name">월 지출</span><span class="srow-val"><span id="g-vexp">200만원</span></span></div>
-      <input type="range" id="g-exp" min="100000" max="10000000" step="100000" value="2000000" oninput="gV.exp=+this.value;gRender()" style="accent-color:#e07b60;background:#fde8e0;">
+      <input type="range" id="g-exp" min="100000" max="30000000" step="100000" value="2000000" oninput="gV.exp=+this.value;gRender()" style="accent-color:#e07b60;background:#fde8e0;">
     </div>
     <div class="srow">
       <div class="srow-top"><span class="srow-name">대출 월 상환액</span><span class="srow-val"><span id="g-vloan">0원</span></span></div>
-      <input type="range" id="g-loan" min="0" max="5000000" step="100000" value="0" oninput="gV.loan=+this.value;gRender()" style="accent-color:#c0341d;background:#fdecea;">
+      <input type="range" id="g-loan" min="0" max="20000000" step="100000" value="0" oninput="gV.loan=+this.value;gRender()" style="accent-color:#c0341d;background:#fdecea;">
     </div>
   </div>
-
   <div class="card">
     <div class="card-label">투자 조건</div>
     <div class="srow">
       <div class="srow-top"><span class="srow-name">연 투자 수익률</span><span class="srow-val"><span id="g-vrate">5.0</span><span class="unit">%</span></span></div>
-      <input type="range" id="g-rate" min="0" max="20" step="0.5" value="5" oninput="gV.rate=+this.value;gRender()" style="accent-color:#7c5dd4;background:#ede8fc;">
+      <input type="range" id="g-rate" min="0" max="30" step="0.5" value="5" oninput="gV.rate=+this.value;gRender()" style="accent-color:#7c5dd4;background:#ede8fc;">
     </div>
     <div class="srow">
       <div class="srow-top"><span class="srow-name">월 저축의 투자 비율</span><span class="srow-val"><span id="g-vinv">80</span><span class="unit">%</span></span></div>
       <input type="range" id="g-inv" min="0" max="100" step="5" value="80" oninput="gV.inv=+this.value;gRender()" style="accent-color:#7c5dd4;background:#ede8fc;">
     </div>
   </div>
-
   <div class="hero" id="g-hero">
     <div class="hlbl">목표 달성까지</div>
     <div id="g-hval" class="hval">—</div>
     <div id="g-hsub" class="hsub">—</div>
   </div>
-
   <div class="sg3">
     <div class="sc"><div class="sl">월 실수령</div><div class="sv blue" id="g-take">-</div></div>
     <div class="sc"><div class="sl">월 저축 가능액</div><div class="sv" id="g-save">-</div><div class="sv2">수령 − 지출 − 상환</div></div>
@@ -489,17 +364,15 @@ footer a { color: var(--accent); text-decoration: none; }
     <div class="sc"><div class="sl">달성 시 투자 수익</div><div class="sv green" id="g-ret">-</div></div>
     <div class="sc"><div class="sl">저축만 했을 때</div><div class="sv" id="g-nosave">-</div><div class="sv2">투자 없이</div></div>
   </div>
-
   <div class="card">
     <div class="card-label">자산 성장 시뮬레이션</div>
     <div class="leg">
       <span><span class="ldot" style="background:#1a5cff;"></span>투자 포함</span>
       <span><span class="ldot" style="background:#1a8a50;"></span>단순 저축</span>
-      <span><span class="ldot" style="background:#c0341d;border-top:2px dashed #c0341d;height:0;"></span>목표</span>
+      <span><span class="ldot" style="background:#c0341d;"></span>목표</span>
     </div>
     <div class="chart-wrap"><canvas id="gChart"></canvas></div>
   </div>
-
   <div class="card">
     <div class="card-label">연도별 자산 현황</div>
     <div class="tbl-wrap">
@@ -511,149 +384,161 @@ footer a { color: var(--accent); text-decoration: none; }
   <p class="note">* 2024년 기준 근로소득세 간이 계산. 투자 수익률은 세전·연복리 기준.</p>
 </div>
 
-<footer>
-  <p>© 2025 HoneyTips🍯 — 모든 계산은 참고용이며 실제와 다를 수 있습니다.</p>
-</footer>
+<!-- ══════ TAB 3 — 복리 ══════ -->
+<div class="page" id="tab3">
+  <div class="card">
+    <div class="card-label">투자 조건</div>
+    <div class="srow">
+      <div class="srow-top"><span class="srow-name">초기 투자금</span><span class="srow-val"><span id="c-vp">1억원</span></span></div>
+      <input type="range" id="c-p" min="0" max="1000000000" step="10000000" value="100000000" oninput="cRender()" style="accent-color:#1a5cff;background:#dce8ff;">
+    </div>
+    <div class="srow">
+      <div class="srow-top"><span class="srow-name">연간 추가 투자금</span><span class="srow-val"><span id="c-va">0원</span></span></div>
+      <input type="range" id="c-a" min="0" max="100000000" step="1000000" value="0" oninput="cRender()" style="accent-color:#1a5cff;background:#dce8ff;">
+    </div>
+    <div class="srow">
+      <div class="srow-top"><span class="srow-name">연이율</span><span class="srow-val"><span id="c-vr">7.0</span><span class="unit">%</span></span></div>
+      <input type="range" id="c-r" min="1" max="30" step="0.5" value="7" oninput="cRender()" style="accent-color:#1a8a50;background:#d8f0e4;">
+    </div>
+    <div class="srow">
+      <div class="srow-top"><span class="srow-name">투자 기간</span><span class="srow-val"><span id="c-vy">20</span><span class="unit">년</span></span></div>
+      <input type="range" id="c-y" min="1" max="50" step="1" value="20" oninput="cRender()" style="accent-color:#a06010;background:#fef0d8;">
+    </div>
+  </div>
+  <div class="sg3">
+    <div class="sc"><div class="sl">원금 합계</div><div class="sv" id="c-sp">-</div></div>
+    <div class="sc"><div class="sl">이자 수익</div><div class="sv blue" id="c-si">-</div></div>
+    <div class="sc"><div class="sl">최종 금액</div><div class="sv green" id="c-st">-</div></div>
+  </div>
+  <div class="card">
+    <div class="leg">
+      <span><span class="ldot" style="background:#1a5cff;"></span>복리</span>
+      <span><span class="ldot" style="background:#e2a04a;"></span>단리</span>
+      <span><span class="ldot" style="background:#c0bdb6;"></span>원금</span>
+    </div>
+    <div class="chart-wrap"><canvas id="cChart"></canvas></div>
+  </div>
+  <div class="card" style="margin-bottom:0;">
+    <div class="card-label">72의 법칙</div>
+    <p style="font-size:13px;color:var(--text2);">현재 이율 <strong id="c-72r" style="color:var(--text);">7%</strong>에서 원금이 2배가 되는 데 약 <strong id="c-72y" style="color:var(--accent);">10.3년</strong>이 걸립니다.</p>
+  </div>
+</div>
+
+<!-- ══════ TAB 4 — 종합 계산기 ══════ -->
+<div class="page on" id="tab4">
+  <div class="hub-hero">
+    <div class="hub-icon">🍯</div>
+    <div class="hub-title">HoneyTips 재무 계산기</div>
+    <div class="hub-sub">슬라이더 하나로 실시간 계산<br>직장인·사업자·투자자 모두를 위한 재무 도구</div>
+  </div>
+
+  <div class="hub-grid">
+    <div class="hub-card" onclick="showTab(0)">
+      <div class="hc-icon">💰</div>
+      <div class="hc-name">연봉 실수령 계산기</div>
+      <div class="hc-desc">세금·4대보험을 항목별로 계산해 실제 통장에 들어오는 금액을 확인하세요.</div>
+      <div style="background:var(--accent-l);border-radius:8px;padding:10px 12px;">
+        <div class="hc-label">월 실수령 (연봉 1억 기준)</div>
+        <div class="hc-val" id="hub-netm" style="color:var(--accent);">계산 중...</div>
+      </div>
+      <button class="hub-btn">계산하러 가기 →</button>
+    </div>
+
+    <div class="hub-card" onclick="showTab(1)">
+      <div class="hc-icon">📊</div>
+      <div class="hc-name">손익 계산기</div>
+      <div class="hc-desc">법인·개인사업자 세금과 순이익을 매출·비용 조정으로 실시간 확인하세요.</div>
+      <div style="background:var(--green-l);border-radius:8px;padding:10px 12px;">
+        <div class="hc-label">세후 순이익 (매출 5억 기준)</div>
+        <div class="hc-val" id="hub-netop" style="color:var(--green);">계산 중...</div>
+      </div>
+      <button class="hub-btn">계산하러 가기 →</button>
+    </div>
+
+    <div class="hub-card" onclick="showTab(2)">
+      <div class="hc-icon">🎯</div>
+      <div class="hc-name">목표달성 계산기</div>
+      <div class="hc-desc">연봉·지출·수익률을 입력하면 목표 금액까지 몇 년 걸리는지 계산합니다.</div>
+      <div style="background:#ede8fc;border-radius:8px;padding:10px 12px;">
+        <div class="hc-label">10억 달성까지</div>
+        <div class="hc-val" id="hub-goal" style="color:#7c5dd4;">계산 중...</div>
+      </div>
+      <button class="hub-btn">계산하러 가기 →</button>
+    </div>
+
+    <div class="hub-card" onclick="showTab(3)">
+      <div class="hc-icon">📈</div>
+      <div class="hc-name">복리 계산기</div>
+      <div class="hc-desc">복리의 마법을 시각화합니다. 투자금·이율·기간을 바꾸며 미래 자산을 확인하세요.</div>
+      <div style="background:var(--amber-l);border-radius:8px;padding:10px 12px;">
+        <div class="hc-label">1억 × 7% × 20년</div>
+        <div class="hc-val" id="hub-compound" style="color:var(--amber);">계산 중...</div>
+      </div>
+      <button class="hub-btn">계산하러 가기 →</button>
+    </div>
+  </div>
+
+  <div class="hub-tip">
+    <strong>💡 꿀팁</strong><br>
+    각 계산기는 서로 연결됩니다. 실수령 계산기로 월 실수령을 확인하고 → 목표달성 계산기에 연봉을 입력하면 달성 시기가 자동 계산됩니다. 손익 계산기의 순이익을 복리 계산기 초기 투자금으로 활용해보세요.
+  </div>
+
+  <p class="note" style="text-align:center;margin-top:16px;">모든 계산은 참고용이며 실제와 다를 수 있습니다. 세율은 2024년 기준입니다.</p>
+</div>
+
+<footer><p>© 2026 HoneyTips🍯 — 모든 계산은 참고용이며 실제와 다를 수 있습니다.</p></footer>
 
 <script>
-/* ════════════════════════════════
-   SHARED UTILITIES
-════════════════════════════════ */
-const W  = v => '₩' + Math.round(v).toLocaleString('ko-KR');
-const Ws = v => {
-  const a = Math.abs(Math.round(v)), s = v < 0 ? '-' : '';
-  if (a >= 1e8) return s + (a/1e8).toFixed(1) + '억';
-  if (a >= 1e4) return s + Math.round(a/1e4) + '만';
-  return (v < 0 ? '-' : '') + Math.abs(Math.round(v)).toLocaleString();
-};
-const fS = v => {
-  const a = Math.abs(v), e = Math.floor(a/1e8), c = Math.floor((a%1e8)/1e7);
-  const s = v < 0 ? '-' : '';
-  if (e > 0 && c > 0) return s + e + '억 ' + c + '천만원';
-  if (e > 0) return s + e + '억원';
-  return s + Math.round(a/1e4) + '만원';
-};
-const Pct = v => (Math.round(v*10)/10) + '%';
+/* ── 공통 유틸 ── */
+const W  = v => '₩'+Math.round(v).toLocaleString('ko-KR');
+const Ws = v => {const a=Math.abs(Math.round(v)),s=v<0?'-':'';if(a>=1e8)return s+(a/1e8).toFixed(1)+'억';if(a>=1e4)return s+Math.round(a/1e4)+'만';return(v<0?'-':'')+Math.abs(Math.round(v)).toLocaleString();};
+const fS = v => {const a=Math.abs(v),e=Math.floor(a/1e8),c=Math.floor((a%1e8)/1e7),s=v<0?'-':'';if(e>0&&c>0)return s+e+'억 '+c+'천만원';if(e>0)return s+e+'억원';return s+Math.round(a/1e4)+'만원';};
+const Pct= v => (Math.round(v*10)/10)+'%';
 
-const IND_TAX = [{l:14e6,r:.06},{l:5e7,r:.15},{l:88e6,r:.24},{l:15e7,r:.35},{l:3e8,r:.38},{l:5e8,r:.40},{l:1e9,r:.42},{l:Infinity,r:.45}];
-const CORP_TAX= [{l:2e8,r:.09},{l:2e10,r:.19},{l:3e11,r:.21},{l:Infinity,r:.24}];
+const IND_TAX=[{l:14e6,r:.06},{l:5e7,r:.15},{l:88e6,r:.24},{l:15e7,r:.35},{l:3e8,r:.38},{l:5e8,r:.40},{l:1e9,r:.42},{l:Infinity,r:.45}];
+const CORP_TAX=[{l:2e8,r:.09},{l:2e10,r:.19},{l:3e11,r:.21},{l:Infinity,r:.24}];
 
-function calcTaxBracket(inc, br) {
-  if (inc <= 0) return 0;
-  let t = 0, p = 0;
-  for (const b of br) { if (inc <= p) break; t += (Math.min(inc,b.l)-p)*b.r; p = b.l; }
-  return t;
-}
-function calcTakehome(sal) {
-  if (sal <= 0) return 0;
+function calcTaxBracket(inc,br){if(inc<=0)return 0;let t=0,p=0;for(const b of br){if(inc<=p)break;t+=(Math.min(inc,b.l)-p)*b.r;p=b.l;}return t;}
+function calcTakehome(sal){
+  if(sal<=0)return{monthly:0,itax:0,ltax:0,pen:0,hlt:0,ltc:0,emp:0,totalAnnual:0};
   let ded;
-  if (sal<=5e6) ded=sal*.7;
-  else if (sal<=15e6) ded=3500000+(sal-5e6)*.4;
-  else if (sal<=45e6) ded=7500000+(sal-15e6)*.15;
-  else if (sal<=100e6) ded=12000000+(sal-45e6)*.05;
-  else ded=Math.min(20e6,14750000+(sal-100e6)*.02);
-  const earned=sal-ded, taxable=Math.max(0,earned-1500000);
-  const tax=calcTaxBracket(taxable, IND_TAX);
+  if(sal<=5e6)ded=sal*.7;else if(sal<=15e6)ded=3500000+(sal-5e6)*.4;else if(sal<=45e6)ded=7500000+(sal-15e6)*.15;else if(sal<=100e6)ded=12000000+(sal-45e6)*.05;else ded=Math.min(20e6,14750000+(sal-100e6)*.02);
+  const earned=sal-ded,taxable=Math.max(0,earned-1500000);
+  const tax=calcTaxBracket(taxable,IND_TAX);
   let cr=tax<=1300000?tax*.55:715000+(tax-1300000)*.30;
   cr=Math.min(cr,sal<=33e6?740000:sal<=70e6?660000:500000);
-  const itax=Math.max(0,Math.round(tax-cr)), ltax=Math.round(itax*.10);
-  const mo=sal/12;
-  const pen=Math.round(Math.min(mo,5900000)*.045);
-  const hlt=Math.round(mo*.03545), ltc=Math.round(hlt*.1295), emp=Math.round(mo*.009);
+  const itax=Math.max(0,Math.round(tax-cr)),ltax=Math.round(itax*.10);
+  const mo=sal/12,pen=Math.round(Math.min(mo,5900000)*.045);
+  const hlt=Math.round(mo*.03545),ltc=Math.round(hlt*.1295),emp=Math.round(mo*.009);
   const totalAnnual=itax+ltax+(pen+hlt+ltc+emp)*12;
-  return {monthly:Math.round((sal-totalAnnual)/12), itax,ltax,pen,hlt,ltc,emp,totalAnnual};
+  return{monthly:Math.round((sal-totalAnnual)/12),itax,ltax,pen,hlt,ltc,emp,totalAnnual};
 }
 
-function showTab(i) {
-  document.querySelectorAll('.page').forEach((p,j)=>p.classList.toggle('on',i===j));
-  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('on',i===j));
-  if (i===0 && !cChart) cRender();
-  if (i===1 && !sInited) sRender();
-  if (i===3 && !gChart) gRender();
+let activeTab=0;
+const TAB_MAP=[4,0,2,1,3];
+function showTab(pageId){
+  document.querySelectorAll('.page').forEach((p,j)=>p.classList.toggle('on',pageId===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('on',TAB_MAP[j]===pageId));
+  activeTab=pageId;
+  if(pageId===1&&!pInited){pBuildSliders();pRender();pInited=true;}
+  if(pageId===2&&!gInited){gRender();gInited=true;}
+  if(pageId===3&&!cInited){cRender();cInited=true;}
+  if(pageId===4){updateHub();}
 }
 
-/* ════════════════════════════════
-   TAB 0 — 복리 계산기
-════════════════════════════════ */
-let cChart = null;
-function cRender() {
-  const P  = +document.getElementById('c-p').value;
-  const A  = +document.getElementById('c-a').value;
-  const r  = +document.getElementById('c-r').value/100;
-  const Y  = +document.getElementById('c-y').value;
-  const n  = 12;
-  document.getElementById('c-vp').textContent = fS(P);
-  document.getElementById('c-va').textContent = fS(A) + '원';
-  document.getElementById('c-vr').textContent = (+document.getElementById('c-r').value).toFixed(1);
-  document.getElementById('c-vy').textContent = Y;
-
-  const labels=[], compound=[], simple=[], principal=[];
-  for (let y=0; y<=Y; y++) {
-    labels.push(y+'년');
-    let comp = P * Math.pow(1+r/n, n*y);
-    for (let k=1; k<=y; k++) comp += A * Math.pow(1+r/n, n*(y-k));
-    compound.push(Math.round(comp));
-    simple.push(Math.round(P*(1+r*y) + A*y));
-    principal.push(Math.round(P));
-  }
-  const fin = compound[Y], prinTotal = P + A*Y, interest = fin - prinTotal;
-  document.getElementById('c-sp').textContent = fS(prinTotal) + '원';
-  document.getElementById('c-si').textContent = fS(interest) + '원';
-  document.getElementById('c-st').textContent = fS(fin) + '원';
-  document.getElementById('c-72r').textContent = (+document.getElementById('c-r').value).toFixed(1) + '%';
-  document.getElementById('c-72y').textContent = (72 / +document.getElementById('c-r').value).toFixed(1) + '년';
-
-  const maxY = Math.max(...compound) * 1.05;
-  if (cChart) cChart.destroy();
-  cChart = new Chart(document.getElementById('cChart'), {
-    type:'line',
-    data:{labels,datasets:[
-      {label:'복리',data:compound,borderColor:'#1a5cff',backgroundColor:'rgba(26,92,255,.07)',fill:true,tension:.35,pointRadius:0,borderWidth:2.5},
-      {label:'단리',data:simple,borderColor:'#e2a04a',backgroundColor:'transparent',fill:false,tension:0,pointRadius:0,borderWidth:1.5,borderDash:[5,4]},
-      {label:'원금',data:principal,borderColor:'#c0bdb6',backgroundColor:'transparent',fill:false,tension:0,pointRadius:0,borderWidth:1,borderDash:[3,3]},
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+Ws(ctx.raw)+'원'}}},
-      scales:{
-        x:{grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},maxTicksLimit:8}},
-        y:{min:0,max:maxY,grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},callback:v=>Ws(v)}}
-      }}
-  });
-}
-
-/* ════════════════════════════════
-   TAB 1 — 실수령 계산기
-════════════════════════════════ */
-let sInited = false;
-function sRender() {
-  sInited = true;
-  const sal = +document.getElementById('s-sal').value;
-  document.getElementById('s-vsal').textContent = fS(sal) + '원';
-  document.getElementById('s-barR').textContent = fS(sal) + '원';
-
-  const {monthly,itax,ltax,pen,hlt,ltc,emp,totalAnnual} = calcTakehome(sal);
-  const netY = monthly*12, effRate = totalAnnual/sal*100;
-
-  document.getElementById('s-netm').textContent = Ws(monthly) + '원';
-  document.getElementById('s-nety').textContent = fS(netY) + '원';
-  document.getElementById('s-rate').textContent = Pct(effRate);
-
-  const segs=[
-    {v:netY,      c:'#1a5cff', lbl:'실수령'},
-    {v:itax+ltax, c:'#e24b4a', lbl:'세금'},
-    {v:pen*12,    c:'#5caa85', lbl:'국민연금'},
-    {v:hlt*12,    c:'#73726c', lbl:'건강보험'},
-    {v:ltc*12,    c:'#b4b2a9', lbl:'장기요양'},
-    {v:emp*12,    c:'#e2a04a', lbl:'고용보험'},
-  ];
-  const MIN_PX=6, trackW=440;
+/* ═══ TAB 0 실수령 ═══ */
+function sRender(){
+  const sal=+document.getElementById('s-sal').value;
+  document.getElementById('s-vsal').textContent=fS(sal);
+  document.getElementById('s-barR').textContent=fS(sal);
+  const{monthly,itax,ltax,pen,hlt,ltc,emp,totalAnnual}=calcTakehome(sal);
+  const netY=monthly*12,effRate=totalAnnual/sal*100;
+  document.getElementById('s-netm').textContent=Ws(monthly)+'원';
+  document.getElementById('s-nety').textContent=fS(netY);
+  document.getElementById('s-rate').textContent=Pct(effRate);
+  const segs=[{v:netY,c:'#1a5cff',lbl:'실수령'},{v:itax+ltax,c:'#e24b4a',lbl:'세금'},{v:pen*12,c:'#5caa85',lbl:'국민연금'},{v:hlt*12,c:'#73726c',lbl:'건강보험'},{v:ltc*12,c:'#b4b2a9',lbl:'장기요양'},{v:emp*12,c:'#e2a04a',lbl:'고용보험'}];
   const tot=Math.max(sal,1);
-  document.getElementById('s-bar').innerHTML = segs.map(sg=>{
-    const w = Math.max(sg.v/tot*100, MIN_PX/trackW*100).toFixed(2);
-    const show = sg.v/tot > 0.08;
-    return `<div class="seg" style="width:${w}%;background:${sg.c};">${show?`<span class="seg-lbl">${sg.lbl}<br>${Pct(sg.v/tot*100)}</span>`:''}</div>`;
-  }).join('');
-
+  document.getElementById('s-bar').innerHTML=segs.map(sg=>{const w=Math.max(sg.v/tot*100,.3).toFixed(2);const show=sg.v/tot>0.08;return`<div class="seg" style="width:${w}%;background:${sg.c};">${show?`<span class="seg-lbl">${sg.lbl}<br>${Pct(sg.v/tot*100)}</span>`:''}</div>`;}).join('');
   const rows=[
     {label:'근로소득세',dot:'#e24b4a',a:itax,m:Math.round(itax/12),pct:itax/sal*100},
     {label:'지방소득세 (×10%)',dot:'#f09595',a:ltax,m:Math.round(ltax/12),pct:ltax/sal*100},
@@ -666,64 +551,43 @@ function sRender() {
     {label:'총 공제 합계',a:totalAnnual,m:Math.round(totalAnnual/12),pct:totalAnnual/sal*100,tot:true},
     {label:'실수령액',a:netY,m:monthly,pct:netY/sal*100,net:true},
   ];
-  document.getElementById('s-tbody').innerHTML = rows.map(r=>{
-    const ps = '<span style="color:var(--text2);">'+Pct(r.pct)+'</span>';
-    if(r.net) return `<tr class="net"><td>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r">${ps}</td></tr>`;
-    if(r.tot) return `<tr class="tot"><td>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r">${ps}</td></tr>`;
-    if(r.grp) return `<tr class="grp"><td colspan="2">${r.label}: ${W(r.a)}</td><td class="r muted">${W(r.m)}/월</td><td class="r muted">${Pct(r.pct)}</td></tr>`;
-    return `<tr><td><span class="dot" style="background:${r.dot};"></span>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r muted">${Pct(r.pct)}</td></tr>`;
+  document.getElementById('s-tbody').innerHTML=rows.map(r=>{
+    const ps='<span style="color:var(--text2);">'+Pct(r.pct)+'</span>';
+    if(r.net)return`<tr class="net"><td>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r">${ps}</td></tr>`;
+    if(r.tot)return`<tr class="tot"><td>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r">${ps}</td></tr>`;
+    if(r.grp)return`<tr class="grp"><td colspan="2">${r.label}: ${W(r.a)}</td><td class="r muted">${W(r.m)}/월</td><td class="r muted">${Pct(r.pct)}</td></tr>`;
+    return`<tr><td><span class="dot" style="background:${r.dot};"></span>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r muted">${Pct(r.pct)}</td></tr>`;
   }).join('');
-
-  const ded = +document.getElementById('s-sal').value;
-  const {taxable:tx} = (() => {
-    let d;
-    if(sal<=5e6)d=sal*.7;else if(sal<=15e6)d=3500000+(sal-5e6)*.4;else if(sal<=45e6)d=7500000+(sal-15e6)*.15;else if(sal<=100e6)d=12000000+(sal-45e6)*.05;else d=Math.min(20e6,14750000+(sal-100e6)*.02);
-    return {taxable:Math.max(0,sal-d-1500000)};
-  })();
-  let ml='6%';
-  if(tx>3e8)ml='38~45%';else if(tx>15e7)ml='35%';else if(tx>88e6)ml='24%';else if(tx>5e7)ml='15%';
-  document.getElementById('s-bb').textContent = '한계세율 ' + ml;
-
-  document.getElementById('s-bk').innerHTML = '<div class="bk-grid">' + IND_TAX.map((b,i,arr)=>{
-    const from=i===0?0:arr[i-1].l, active=tx>from;
-    const bktax=active?Math.round((Math.min(tx,b.l)-from)*b.r):0;
-    return `<div class="bk-cell${active?' active':''}">
-      <div class="bk-pct">${(b.r*100).toFixed(0)}%</div>
-      <div class="bk-range">${Ws(from)}~${b.l===Infinity?'∞':Ws(b.l)}</div>
-      ${active&&bktax>0?`<div class="bk-tax">세액 ${Ws(bktax)}</div>`:''}
-    </div>`;
-  }).join('') + '</div>';
+  let d;if(sal<=5e6)d=sal*.7;else if(sal<=15e6)d=3500000+(sal-5e6)*.4;else if(sal<=45e6)d=7500000+(sal-15e6)*.15;else if(sal<=100e6)d=12000000+(sal-45e6)*.05;else d=Math.min(20e6,14750000+(sal-100e6)*.02);
+  const tx=Math.max(0,sal-d-1500000);
+  let ml='6%';if(tx>3e8)ml='38~45%';else if(tx>15e7)ml='35%';else if(tx>88e6)ml='24%';else if(tx>5e7)ml='15%';
+  document.getElementById('s-bb').textContent='한계세율 '+ml;
+  document.getElementById('s-bk').innerHTML='<div class="bk-grid">'+IND_TAX.map((b,i,arr)=>{const from=i===0?0:arr[i-1].l,active=tx>from;const bktax=active?Math.round((Math.min(tx,b.l)-from)*b.r):0;return`<div class="bk-cell${active?' active':''}"><div class="bk-pct">${(b.r*100).toFixed(0)}%</div><div class="bk-range">${Ws(from)}~${b.l===Infinity?'∞':Ws(b.l)}</div>${active&&bktax>0?`<div class="bk-tax">세액 ${Ws(bktax)}</div>`:''}</div>`;}).join('')+'</div>';
 }
 
-/* ════════════════════════════════
-   TAB 2 — 손익계산기
-════════════════════════════════ */
-let pIsCorp = true;
-const pExpDefs = {
+/* ═══ TAB 1 손익 ═══ */
+let pIsCorp=true,pInited=false;
+const pExpDefs={
   corp:[
-    {id:'cogs',label:'매출원가',max:1e9,step:5e6,val:150000000,color:'#e07b60'},
-    {id:'sal', label:'인건비', max:5e8,step:5e6,val:100000000,color:'#e2a04a'},
-    {id:'rent',label:'임차료', max:2e8,step:1e6,val:30000000, color:'#d4a84b'},
-    {id:'mkt', label:'마케팅비',max:2e8,step:1e6,val:20000000,color:'#a78bfa'},
-    {id:'etc', label:'기타판관',max:2e8,step:1e6,val:10000000,color:'#9ca3b4'},
+    {id:'cogs',label:'매출원가',max:3e9,step:5e7,val:150000000,color:'#e07b60'},
+    {id:'sal', label:'인건비', max:1.5e9,step:1e7,val:100000000,color:'#e2a04a'},
+    {id:'rent',label:'임차료', max:5e8,step:5e6,val:30000000, color:'#d4a84b'},
+    {id:'mkt', label:'마케팅비',max:5e8,step:5e6,val:20000000,color:'#a78bfa'},
+    {id:'etc', label:'기타판관',max:5e8,step:5e6,val:10000000,color:'#9ca3b4'},
   ],
   ind:[
-    {id:'cost',label:'매입비용',max:1e9,step:5e6,val:120000000,color:'#e07b60'},
-    {id:'lab', label:'인건비', max:3e8,step:5e6,val:50000000, color:'#e2a04a'},
-    {id:'rent',label:'임차료', max:2e8,step:1e6,val:20000000, color:'#d4a84b'},
-    {id:'etc', label:'기타경비',max:2e8,step:1e6,val:5000000, color:'#9ca3b4'},
+    {id:'cost',label:'매입비용',max:3e9,step:5e7,val:120000000,color:'#e07b60'},
+    {id:'lab', label:'인건비', max:1e9,step:1e7,val:50000000, color:'#e2a04a'},
+    {id:'rent',label:'임차료', max:5e8,step:5e6,val:20000000, color:'#d4a84b'},
+    {id:'etc', label:'기타경비',max:5e8,step:5e6,val:5000000, color:'#9ca3b4'},
   ]
 };
-let pV = {rev:500000000};
-(function(){ pExpDefs.corp.forEach(d=>pV['c_'+d.id]=d.val); pExpDefs.ind.forEach(d=>pV['i_'+d.id]=d.val); })();
+let pV={rev:500000000};
+(function(){pExpDefs.corp.forEach(d=>pV['c_'+d.id]=d.val);pExpDefs.ind.forEach(d=>pV['i_'+d.id]=d.val);})();
 function calcInsInd(op){if(op<=0)return{pen:0,hlt:0,ltc:0,total:0};const mo=op/12,pb=Math.min(mo,5900000),pen=Math.round(pb*.09)*12,hlt=Math.round(op*.0709),ltc=Math.round(hlt*.1295);return{pen,hlt,ltc,total:pen+hlt+ltc};}
 function pBuildSliders(){
-  const defs=pIsCorp?pExpDefs.corp:pExpDefs.ind, px=pIsCorp?'c_':'i_';
-  document.getElementById('p-sliders').innerHTML=defs.map((d,i)=>`
-    <div class="srow" style="margin-bottom:${i===defs.length-1?0:18}px;">
-      <div class="srow-top"><span class="srow-name">${d.label}</span><span class="srow-val"><span id="pv-${px+d.id}">-</span></span></div>
-      <input type="range" min="0" max="${d.max}" step="${d.step}" value="${pV[px+d.id]}" style="accent-color:${d.color};" oninput="pV['${px+d.id}']=+this.value;pRender()">
-    </div>`).join('');
+  const defs=pIsCorp?pExpDefs.corp:pExpDefs.ind,px=pIsCorp?'c_':'i_';
+  document.getElementById('p-sliders').innerHTML=defs.map((d,i)=>`<div class="srow" style="margin-bottom:${i===defs.length-1?0:18}px;"><div class="srow-top"><span class="srow-name">${d.label}</span><span class="srow-val"><span id="pv-${px+d.id}">-</span></span></div><input type="range" min="0" max="${d.max}" step="${d.step}" value="${pV[px+d.id]}" style="accent-color:${d.color};" oninput="pV['${px+d.id}']=+this.value;pRender()"></div>`).join('');
   document.getElementById('p-ins').style.display=pIsCorp?'none':'block';
 }
 function pSetMode(corp){
@@ -733,35 +597,24 @@ function pSetMode(corp){
   document.getElementById('p-taxlbl').textContent=corp?'법인세 상세':'종합소득세 + 4대보험 상세';
   document.getElementById('p-l1').textContent=corp?'영업이익 (세전)':'사업소득 (세전)';
   document.getElementById('p-l2').textContent=corp?'총 세금':'총 세금+보험';
-  pBuildSliders(); pRender();
+  pBuildSliders();pRender();
 }
-const INSIDE_TH = 0.09, MIN_VIS = 0.003;
+const INSIDE_TH=0.09,MIN_VIS=0.003;
 function pRender(){
   const rev=pV.rev;
-  document.getElementById('p-vrev').textContent=fS(rev)+'원';
-  document.getElementById('p-barR').textContent=fS(rev)+'원';
-  const defs=pIsCorp?pExpDefs.corp:pExpDefs.ind, px=pIsCorp?'c_':'i_';
+  document.getElementById('p-vrev').textContent=fS(rev);
+  document.getElementById('p-barR').textContent=fS(rev);
+  const defs=pIsCorp?pExpDefs.corp:pExpDefs.ind,px=pIsCorp?'c_':'i_';
   const expVals=defs.map(d=>pV[px+d.id]);
   const totalExp=expVals.reduce((a,b)=>a+b,0);
   const op=rev-totalExp;
-  defs.forEach(d=>{const el=document.getElementById('pv-'+px+d.id);if(el)el.textContent=fS(pV[px+d.id])+'원';});
-
+  defs.forEach(d=>{const el=document.getElementById('pv-'+px+d.id);if(el)el.textContent=fS(pV[px+d.id]);});
   let ins={pen:0,hlt:0,ltc:0,total:0};
-  if(!pIsCorp){
-    ins=calcInsInd(Math.max(op,0));
-    document.getElementById('p-pen').textContent=W(ins.pen);
-    document.getElementById('p-hlt').textContent=W(ins.hlt);
-    document.getElementById('p-ltc').textContent=W(ins.ltc);
-    document.getElementById('p-ins-tot').textContent=W(ins.total);
-  }
-  const taxable=Math.max(op,0);
-  const mainTax=calcTaxBracket(taxable, pIsCorp?CORP_TAX:IND_TAX);
-  const localTax=mainTax*.1, totalTax=mainTax+localTax;
-  const totalDed=totalTax+(pIsCorp?0:ins.total);
-  const net=op-totalDed, margin=rev>0?(net/rev)*100:0;
-  const effRate=taxable>0?(totalTax/taxable)*100:0;
-  const totalEffRate=taxable>0?(totalDed/taxable)*100:0;
-
+  if(!pIsCorp){ins=calcInsInd(Math.max(op,0));document.getElementById('p-pen').textContent=W(ins.pen);document.getElementById('p-hlt').textContent=W(ins.hlt);document.getElementById('p-ltc').textContent=W(ins.ltc);document.getElementById('p-ins-tot').textContent=W(ins.total);}
+  const taxable=Math.max(op,0),mainTax=calcTaxBracket(taxable,pIsCorp?CORP_TAX:IND_TAX);
+  const localTax=mainTax*.1,totalTax=mainTax+localTax,totalDed=totalTax+(pIsCorp?0:ins.total);
+  const net=op-totalDed,margin=rev>0?(net/rev)*100:0;
+  const effRate=taxable>0?(totalTax/taxable)*100:0,totalEffRate=taxable>0?(totalDed/taxable)*100:0;
   const opEl=document.getElementById('p-op');opEl.textContent=Ws(op)+'원';opEl.className='sv '+(op>=0?'blue':'red');
   document.getElementById('p-op2').textContent=W(op)+'원';
   document.getElementById('p-ded').textContent=Ws(totalDed)+'원';
@@ -772,183 +625,149 @@ function pRender(){
   document.getElementById('p-effr').textContent=Pct(pIsCorp?effRate:totalEffRate);
   document.getElementById('p-effr2').textContent=pIsCorp?'세금/영업이익':'세금+보험/영업이익';
   const marEl=document.getElementById('p-mar');marEl.textContent=Pct(margin);marEl.className='sv '+(margin>=0?'green':'red');
-
   const segLabels=[...defs.map(d=>d.label),...(pIsCorp?[]:['4대보험']),'세금','순이익'];
   const segVals=[...expVals,...(pIsCorp?[]:[ins.total]),totalTax,Math.max(net,0)];
   const segCols=pIsCorp?['#e07b60','#e2a04a','#d4a84b','#a78bfa','#9ca3b4','#e24b4a','#3b7dd8']:['#e07b60','#e2a04a','#d4a84b','#9ca3b4','#5c8ac0','#e24b4a','#3b7dd8'];
   const tot=Math.max(rev,1);
-  const bigItems=[], smallItems=[];
+  const bigItems=[],smallItems=[];
   segVals.forEach((v,i)=>{if(v<=0)return;(v/tot>=INSIDE_TH?bigItems:smallItems).push({label:segLabels[i],pct:v/tot*100,color:segCols[i],v});});
-
-  const trackW=480;
-  const widths=segVals.map(v=>Math.max(v,0)/tot);
-  document.getElementById('p-bar').innerHTML=widths.map((w,i)=>{
-    if(segVals[i]<=0)return'';
-    const disp=Math.max(w,MIN_VIS)*100;
-    const show=w>=INSIDE_TH;
-    return `<div class="seg" style="width:${disp.toFixed(2)}%;background:${segCols[i]};">${show?`<span class="seg-lbl">${segLabels[i]}<br>${Pct(w*100)}</span>`:''}</div>`;
-  }).join('');
-
+  document.getElementById('p-bar').innerHTML=segVals.map((v,i)=>{if(v<=0)return'';const w=Math.max(v/tot,MIN_VIS)*100;const show=v/tot>=INSIDE_TH;return`<div class="seg" style="width:${w.toFixed(2)}%;background:${segCols[i]};">${show?`<span class="seg-lbl">${segLabels[i]}<br>${Pct(v/tot*100)}</span>`:''}</div>`;}).join('');
   document.getElementById('p-lgd-big').innerHTML=bigItems.map(it=>`<span><span class="dot" style="background:${it.color};border-radius:2px;width:10px;height:10px;display:inline-block;margin-right:3px;"></span>${it.label} <strong style="margin-left:2px;">${Pct(it.pct)}</strong></span>`).join('');
   const sm=document.getElementById('p-lgd-small');
-  if(smallItems.length){sm.style.display='grid';sm.innerHTML=smallItems.map(it=>`<div class="ls-item"><div class="ls-sw" style="background:${it.color};"></div><span class="ls-name">${it.label}</span><span class="ls-pct">${Pct(it.pct)}</span></div>`).join('');}
-  else{sm.style.display='none';}
-
-  const sal=Math.max(rev,1);
+  if(smallItems.length){sm.style.display='grid';sm.innerHTML=smallItems.map(it=>`<div class="ls-item"><div class="ls-sw" style="background:${it.color};"></div><span class="ls-name">${it.label}</span><span class="ls-pct">${Pct(it.pct)}</span></div>`).join('');}else{sm.style.display='none';}
+  const sal2=Math.max(rev,1);
   let rows=pIsCorp?[
-    {label:'매출원가',dot:'#e07b60',a:expVals[0],m:Math.round(expVals[0]/12),pct:expVals[0]/sal*100},
-    {label:'인건비',dot:'#e2a04a',a:expVals[1],m:Math.round(expVals[1]/12),pct:expVals[1]/sal*100},
-    {label:'임차료',dot:'#d4a84b',a:expVals[2],m:Math.round(expVals[2]/12),pct:expVals[2]/sal*100},
-    {label:'마케팅비',dot:'#a78bfa',a:expVals[3],m:Math.round(expVals[3]/12),pct:expVals[3]/sal*100},
-    {label:'기타판관',dot:'#9ca3b4',a:expVals[4],m:Math.round(expVals[4]/12),pct:expVals[4]/sal*100},
-    {label:'비용 소계',a:totalExp,m:Math.round(totalExp/12),pct:totalExp/sal*100,grp:true},
-    {label:'법인세',dot:'#e24b4a',a:mainTax,m:Math.round(mainTax/12),pct:mainTax/sal*100},
-    {label:'지방소득세',dot:'#f09595',a:localTax,m:Math.round(localTax/12),pct:localTax/sal*100},
-    {label:'세금 소계',a:totalTax,m:Math.round(totalTax/12),pct:totalTax/sal*100,grp:true},
-    {label:'총 공제 합계',a:totalDed,m:Math.round(totalDed/12),pct:totalDed/sal*100,tot:true},
-    {label:'세후 순이익',a:net,m:Math.round(net/12),pct:net/sal*100,net:true},
+    {label:'매출원가',dot:'#e07b60',a:expVals[0],m:Math.round(expVals[0]/12),pct:expVals[0]/sal2*100},
+    {label:'인건비',dot:'#e2a04a',a:expVals[1],m:Math.round(expVals[1]/12),pct:expVals[1]/sal2*100},
+    {label:'임차료',dot:'#d4a84b',a:expVals[2],m:Math.round(expVals[2]/12),pct:expVals[2]/sal2*100},
+    {label:'마케팅비',dot:'#a78bfa',a:expVals[3],m:Math.round(expVals[3]/12),pct:expVals[3]/sal2*100},
+    {label:'기타판관',dot:'#9ca3b4',a:expVals[4],m:Math.round(expVals[4]/12),pct:expVals[4]/sal2*100},
+    {label:'비용 소계',a:totalExp,m:Math.round(totalExp/12),pct:totalExp/sal2*100,grp:true},
+    {label:'법인세',dot:'#e24b4a',a:mainTax,m:Math.round(mainTax/12),pct:mainTax/sal2*100},
+    {label:'지방소득세',dot:'#f09595',a:localTax,m:Math.round(localTax/12),pct:localTax/sal2*100},
+    {label:'세금 소계',a:totalTax,m:Math.round(totalTax/12),pct:totalTax/sal2*100,grp:true},
+    {label:'총 공제 합계',a:totalDed,m:Math.round(totalDed/12),pct:totalDed/sal2*100,tot:true},
+    {label:'세후 순이익',a:net,m:Math.round(net/12),pct:net/sal2*100,net:true},
   ]:[
-    {label:'매입비용',dot:'#e07b60',a:expVals[0],m:Math.round(expVals[0]/12),pct:expVals[0]/sal*100},
-    {label:'인건비',dot:'#e2a04a',a:expVals[1],m:Math.round(expVals[1]/12),pct:expVals[1]/sal*100},
-    {label:'임차료',dot:'#d4a84b',a:expVals[2],m:Math.round(expVals[2]/12),pct:expVals[2]/sal*100},
-    {label:'기타경비',dot:'#9ca3b4',a:expVals[3],m:Math.round(expVals[3]/12),pct:expVals[3]/sal*100},
-    {label:'비용 소계',a:totalExp,m:Math.round(totalExp/12),pct:totalExp/sal*100,grp:true},
-    {label:'소득세',dot:'#e24b4a',a:mainTax,m:Math.round(mainTax/12),pct:mainTax/sal*100},
-    {label:'지방소득세',dot:'#f09595',a:localTax,m:Math.round(localTax/12),pct:localTax/sal*100},
-    {label:'세금 소계',a:totalTax,m:Math.round(totalTax/12),pct:totalTax/sal*100,grp:true},
-    {label:'국민연금 (9%)',dot:'#5caa85',a:ins.pen,m:Math.round(ins.pen/12),pct:ins.pen/sal*100},
-    {label:'건강보험 (7.09%)',dot:'#73726c',a:ins.hlt,m:Math.round(ins.hlt/12),pct:ins.hlt/sal*100},
-    {label:'장기요양 (×12.95%)',dot:'#b4b2a9',a:ins.ltc,m:Math.round(ins.ltc/12),pct:ins.ltc/sal*100},
-    {label:'4대보험 소계',a:ins.total,m:Math.round(ins.total/12),pct:ins.total/sal*100,grp:true},
-    {label:'총 공제 합계',a:totalDed,m:Math.round(totalDed/12),pct:totalDed/sal*100,tot:true},
-    {label:'세후 순이익',a:net,m:Math.round(net/12),pct:net/sal*100,net:true},
+    {label:'매입비용',dot:'#e07b60',a:expVals[0],m:Math.round(expVals[0]/12),pct:expVals[0]/sal2*100},
+    {label:'인건비',dot:'#e2a04a',a:expVals[1],m:Math.round(expVals[1]/12),pct:expVals[1]/sal2*100},
+    {label:'임차료',dot:'#d4a84b',a:expVals[2],m:Math.round(expVals[2]/12),pct:expVals[2]/sal2*100},
+    {label:'기타경비',dot:'#9ca3b4',a:expVals[3],m:Math.round(expVals[3]/12),pct:expVals[3]/sal2*100},
+    {label:'비용 소계',a:totalExp,m:Math.round(totalExp/12),pct:totalExp/sal2*100,grp:true},
+    {label:'소득세',dot:'#e24b4a',a:mainTax,m:Math.round(mainTax/12),pct:mainTax/sal2*100},
+    {label:'지방소득세',dot:'#f09595',a:localTax,m:Math.round(localTax/12),pct:localTax/sal2*100},
+    {label:'세금 소계',a:totalTax,m:Math.round(totalTax/12),pct:totalTax/sal2*100,grp:true},
+    {label:'국민연금 (9%)',dot:'#5caa85',a:ins.pen,m:Math.round(ins.pen/12),pct:ins.pen/sal2*100},
+    {label:'건강보험 (7.09%)',dot:'#73726c',a:ins.hlt,m:Math.round(ins.hlt/12),pct:ins.hlt/sal2*100},
+    {label:'장기요양 (×12.95%)',dot:'#b4b2a9',a:ins.ltc,m:Math.round(ins.ltc/12),pct:ins.ltc/sal2*100},
+    {label:'4대보험 소계',a:ins.total,m:Math.round(ins.total/12),pct:ins.total/sal2*100,grp:true},
+    {label:'총 공제 합계',a:totalDed,m:Math.round(totalDed/12),pct:totalDed/sal2*100,tot:true},
+    {label:'세후 순이익',a:net,m:Math.round(net/12),pct:net/sal2*100,net:true},
   ];
-  document.getElementById('p-tbody').innerHTML=rows.map(r=>{
-    const ps='<span style="color:var(--text2);">'+Pct(r.pct)+'</span>';
-    if(r.net)return`<tr class="net"><td>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r">${ps}</td></tr>`;
-    if(r.tot)return`<tr class="tot"><td>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r">${ps}</td></tr>`;
-    if(r.grp)return`<tr class="grp"><td colspan="2">${r.label}: ${W(r.a)}</td><td class="r muted">${W(r.m)}/월</td><td class="r muted">${Pct(r.pct)}</td></tr>`;
-    return`<tr><td><span class="dot" style="background:${r.dot||'#888'};"></span>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r muted">${Pct(r.pct)}</td></tr>`;
-  }).join('');
-
-  const brackets=pIsCorp?CORP_TAX:IND_TAX;
-  let ml='6%';
-  if(taxable>3e8)ml='38~45%';else if(taxable>15e7)ml='35%';else if(taxable>88e6)ml='24%';else if(taxable>5e7)ml='15%';
+  document.getElementById('p-tbody').innerHTML=rows.map(r=>{const ps='<span style="color:var(--text2);">'+Pct(r.pct)+'</span>';if(r.net)return`<tr class="net"><td>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r">${ps}</td></tr>`;if(r.tot)return`<tr class="tot"><td>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r">${ps}</td></tr>`;if(r.grp)return`<tr class="grp"><td colspan="2">${r.label}: ${W(r.a)}</td><td class="r muted">${W(r.m)}/월</td><td class="r muted">${Pct(r.pct)}</td></tr>`;return`<tr><td><span class="dot" style="background:${r.dot||'#888'};"></span>${r.label}</td><td class="r">${W(r.a)}</td><td class="r">${W(r.m)}</td><td class="r muted">${Pct(r.pct)}</td></tr>`;}).join('');
+  const brackets=pIsCorp?CORP_TAX:IND_TAX;let ml='6%';if(taxable>3e8)ml='38~45%';else if(taxable>15e7)ml='35%';else if(taxable>88e6)ml='24%';else if(taxable>5e7)ml='15%';
   document.getElementById('p-bb').textContent='한계세율 '+ml;
-  document.getElementById('p-bk').innerHTML='<div class="bk-grid">'+brackets.map((b,i,arr)=>{
-    const from=i===0?0:arr[i-1].l, active=taxable>from;
-    const bktax=active?Math.round((Math.min(taxable,b.l)-from)*b.r):0;
-    return`<div class="bk-cell${active?' active':''}"><div class="bk-pct">${(b.r*100).toFixed(0)}%</div><div class="bk-range">${Ws(from)}~${b.l===Infinity?'∞':Ws(b.l)}</div>${active&&bktax>0?`<div class="bk-tax">세액 ${Ws(bktax)}</div>`:''}</div>`;
-  }).join('')+'</div>';
+  document.getElementById('p-bk').innerHTML='<div class="bk-grid">'+brackets.map((b,i,arr)=>{const from=i===0?0:arr[i-1].l,active=taxable>from;const bktax=active?Math.round((Math.min(taxable,b.l)-from)*b.r):0;return`<div class="bk-cell${active?' active':''}"><div class="bk-pct">${(b.r*100).toFixed(0)}%</div><div class="bk-range">${Ws(from)}~${b.l===Infinity?'∞':Ws(b.l)}</div>${active&&bktax>0?`<div class="bk-tax">세액 ${Ws(bktax)}</div>`:''}</div>`;}).join('')+'</div>';
 }
 
-/* ════════════════════════════════
-   TAB 3 — 목표달성 계산기
-════════════════════════════════ */
-let gChart = null;
-let gV = {goal:1000000000,asset:0,debt:0,sal:60000000,exp:2000000,loan:0,rate:5,inv:80};
-const MAX_Y = 50;
+/* ═══ TAB 2 목표달성 ═══ */
+let gChart=null,gInited=false;
+let gV={goal:1000000000,asset:0,debt:0,sal:60000000,exp:2000000,loan:0,rate:5,inv:80};
+const MAX_Y=50;
 function gSimulate(save,start,rateY,invR,goal){
-  const r=rateY/100/12;
-  let investBal=Math.max(start,0), cashBal=0, simple=Math.max(start,0);
-  const invMo=save*(invR/100), cashMo=save*(1-invR/100);
-  const yearData=[]; let gM=-1, gMs=-1;
+  const r=rateY/100/12;let investBal=Math.max(start,0),cashBal=0,simple=Math.max(start,0);
+  const invMo=save*(invR/100),cashMo=save*(1-invR/100);
+  const yearData=[];let gM=-1,gMs=-1;
   for(let m=1;m<=MAX_Y*12;m++){
-    investBal=investBal*(1+r)+invMo;
-    cashBal+=cashMo;
-    const bal=investBal+cashBal;
-    simple+=save;
-    if(gM<0&&bal>=goal)gM=m;
-    if(gMs<0&&simple>=goal)gMs=m;
+    investBal=investBal*(1+r)+invMo;cashBal+=cashMo;const bal=investBal+cashBal;simple+=save;
+    if(gM<0&&bal>=goal)gM=m;if(gMs<0&&simple>=goal)gMs=m;
     if(m%12===0){const pr=Math.max(start,0)+save*m;yearData.push({yr:m/12,bal:Math.round(bal),simple:Math.round(simple),pr:Math.round(pr),ret:Math.round(bal-pr)});}
   }
   return{gM,gMs,yearData};
 }
 function gRender(){
-  document.getElementById('g-vgoal').textContent=fS(gV.goal)+'원';
-  document.getElementById('g-vasset').textContent=fS(gV.asset)+'원';
-  document.getElementById('g-vdebt').textContent=fS(gV.debt)+'원';
-  document.getElementById('g-vsal').textContent=fS(gV.sal)+'원';
+  document.getElementById('g-vgoal').textContent=fS(gV.goal);
+  document.getElementById('g-vasset').textContent=fS(gV.asset);
+  document.getElementById('g-vdebt').textContent=fS(gV.debt);
+  document.getElementById('g-vsal').textContent=fS(gV.sal);
   document.getElementById('g-vexp').textContent=Ws(gV.exp)+'원';
   document.getElementById('g-vloan').textContent=Ws(gV.loan)+'원';
   document.getElementById('g-vrate').textContent=(Math.round(gV.rate*10)/10).toFixed(1);
   document.getElementById('g-vinv').textContent=Math.round(gV.inv);
-
-  const {monthly} = calcTakehome(gV.sal);
-  const save = monthly - gV.exp - gV.loan;
-  const startNet = gV.asset - gV.debt;
-
+  const{monthly}=calcTakehome(gV.sal);
+  const save=monthly-gV.exp-gV.loan,startNet=gV.asset-gV.debt;
   document.getElementById('g-take').textContent=Ws(monthly)+'원';
   const saveEl=document.getElementById('g-save');saveEl.textContent=Ws(save)+'원';saveEl.className='sv '+(save>=0?'green':'red');
   const startEl=document.getElementById('g-start');startEl.textContent=Ws(startNet)+'원';startEl.className='sv '+(startNet>=0?'':'red');
-
-  const hero=document.getElementById('g-hero');
-  const hval=document.getElementById('g-hval');
-  const hsub=document.getElementById('g-hsub');
-
+  const hero=document.getElementById('g-hero'),hval=document.getElementById('g-hval'),hsub=document.getElementById('g-hsub');
   if(save<=0&&startNet<gV.goal){
-    hero.style.borderColor='var(--red)';
-    hval.className='herr';hval.textContent='저축 가능액 부족';
-    hsub.textContent='월 저축액이 0원 이하입니다. 지출 또는 상환액을 줄여보세요.';
+    hero.style.borderColor='var(--red)';hval.className='herr';hval.textContent='저축 가능액 부족';
+    hsub.textContent='월 저축액이 0원 이하입니다.';
     ['g-prin','g-ret','g-nosave'].forEach(id=>document.getElementById(id).textContent='-');
-    if(gChart){gChart.destroy();gChart=null;}
-    document.getElementById('g-tbody').innerHTML='';
-    return;
+    if(gChart){gChart.destroy();gChart=null;}document.getElementById('g-tbody').innerHTML='';return;
   }
   hero.style.borderColor='var(--accent)';
   const{gM,gMs,yearData}=gSimulate(save,startNet,gV.rate,gV.inv,gV.goal);
-
-  if(gM<0){
-    hval.className='herr';hval.textContent=MAX_Y+'년 내 달성 불가';
-    hsub.textContent='수익률을 높이거나 저축액을 늘려보세요.';
-  } else {
-    const yy=Math.floor(gM/12),mm=gM%12;
-    hval.className='hval';hval.textContent=(yy>0?yy+'년 ':'')+(mm>0?mm+'개월':'');
-    const now=new Date(),ty=now.getFullYear()+yy+(now.getMonth()+mm>11?1:0),tm=((now.getMonth()+mm)%12)+1;
-    hsub.textContent=ty+'년 '+tm+'월 달성 예상';
-  }
+  if(gM<0){hval.className='herr';hval.textContent=MAX_Y+'년 내 달성 불가';hsub.textContent='수익률을 높이거나 저축액을 늘려보세요.';}
+  else{const yy=Math.floor(gM/12),mm=gM%12;hval.className='hval';hval.textContent=(yy>0?yy+'년 ':'')+(mm>0?mm+'개월':'');const now=new Date(),ty=now.getFullYear()+yy+(now.getMonth()+mm>11?1:0),tm=((now.getMonth()+mm)%12)+1;hsub.textContent=ty+'년 '+tm+'월 달성 예상';}
   const hitYr=gM>0?Math.ceil(gM/12):null;
   const dispRow=yearData[Math.min((hitYr||MAX_Y),yearData.length)-1]||{pr:0,ret:0};
   document.getElementById('g-prin').textContent=Ws(dispRow.pr)+'원';
   document.getElementById('g-ret').textContent=Ws(Math.max(0,dispRow.ret))+'원';
   document.getElementById('g-nosave').textContent=gMs>0?Math.ceil(gMs/12)+'년':MAX_Y+'년+';
-
   const chartYrs=Math.min(hitYr?hitYr+3:MAX_Y,MAX_Y);
   const slice=yearData.slice(0,chartYrs);
   const maxYval=Math.max(gV.goal*1.1,slice.length?slice[slice.length-1].bal*1.05:gV.goal);
-
   if(gChart)gChart.destroy();
-  gChart=new Chart(document.getElementById('gChart'),{
-    type:'line',
-    data:{labels:slice.map(d=>d.yr+'년'),datasets:[
-      {label:'투자 포함',data:slice.map(d=>d.bal),borderColor:'#1a5cff',backgroundColor:'rgba(26,92,255,.07)',fill:true,tension:.35,pointRadius:0,borderWidth:2.5},
-      {label:'단순 저축',data:slice.map(d=>d.simple),borderColor:'#1a8a50',backgroundColor:'transparent',fill:false,tension:.2,pointRadius:0,borderWidth:1.5},
-      {label:'목표',data:slice.map(()=>gV.goal),borderColor:'#c0341d',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false,tension:0},
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+Ws(ctx.raw)+'원'}}},
-      scales:{
-        x:{grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},maxTicksLimit:8}},
-        y:{min:0,max:maxYval,grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},callback:v=>Ws(v)}}
-      }}
-  });
-
-  document.getElementById('g-tbody').innerHTML=slice.map((d,i)=>{
-    const isHit=hitYr&&d.yr===hitYr;
-    const bg=isHit?'background:var(--green-l);':'';
-    const fc=isHit?'color:var(--green);font-weight:700;':'';
-    const mu='color:var(--text2);';
-    return`<tr style="${bg}"><td style="padding:6px 10px;border-bottom:1px solid var(--border);${fc}">${d.yr}년차${isHit?' ★':''}</td><td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);${fc}">${Ws(d.bal)}원</td><td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);${mu}">${Ws(d.simple)}원</td><td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);${mu}">${Ws(d.pr)}원</td><td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--green);">+${Ws(Math.max(0,d.ret))}원</td></tr>`;
-  }).join('');
+  gChart=new Chart(document.getElementById('gChart'),{type:'line',data:{labels:slice.map(d=>d.yr+'년'),datasets:[{label:'투자 포함',data:slice.map(d=>d.bal),borderColor:'#1a5cff',backgroundColor:'rgba(26,92,255,.07)',fill:true,tension:.35,pointRadius:0,borderWidth:2.5},{label:'단순 저축',data:slice.map(d=>d.simple),borderColor:'#1a8a50',backgroundColor:'transparent',fill:false,tension:.2,pointRadius:0,borderWidth:1.5},{label:'목표',data:slice.map(()=>gV.goal),borderColor:'#c0341d',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false,tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+Ws(ctx.raw)+'원'}}},scales:{x:{grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},maxTicksLimit:8}},y:{min:0,max:maxYval,grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},callback:v=>Ws(v)}}}}});
+  document.getElementById('g-tbody').innerHTML=slice.map(d=>{const isHit=hitYr&&d.yr===hitYr;const bg=isHit?'background:var(--green-l);':'';const fc=isHit?'color:var(--green);font-weight:700;':'';const mu='color:var(--text2);';return`<tr style="${bg}"><td style="padding:6px 10px;border-bottom:1px solid var(--border);${fc}">${d.yr}년차${isHit?' ★':''}</td><td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);${fc}">${Ws(d.bal)}원</td><td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);${mu}">${Ws(d.simple)}원</td><td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);${mu}">${Ws(d.pr)}원</td><td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--green);">+${Ws(Math.max(0,d.ret))}원</td></tr>`;}).join('');
 }
 
-/* ════════════════════════════════
-   INIT
-════════════════════════════════ */
-pBuildSliders();
-pRender();
+/* ═══ TAB 3 복리 ═══ */
+let cChart=null,cInited=false;
+function cRender(){
+  const P=+document.getElementById('c-p').value,A=+document.getElementById('c-a').value;
+  const r=+document.getElementById('c-r').value/100,Y=+document.getElementById('c-y').value,n=12;
+  document.getElementById('c-vp').textContent=fS(P);
+  document.getElementById('c-va').textContent=fS(A);
+  document.getElementById('c-vr').textContent=(+document.getElementById('c-r').value).toFixed(1);
+  document.getElementById('c-vy').textContent=Y;
+  const labels=[],compound=[],simple=[],principal=[];
+  for(let y=0;y<=Y;y++){
+    labels.push(y+'년');let comp=P*Math.pow(1+r/n,n*y);
+    for(let k=1;k<=y;k++)comp+=A*Math.pow(1+r/n,n*(y-k));
+    compound.push(Math.round(comp));simple.push(Math.round(P*(1+r*y)+A*y));principal.push(Math.round(P));
+  }
+  const fin=compound[Y],prinTotal=P+A*Y,interest=fin-prinTotal;
+  document.getElementById('c-sp').textContent=fS(prinTotal);
+  document.getElementById('c-si').textContent=fS(interest);
+  document.getElementById('c-st').textContent=fS(fin);
+  document.getElementById('c-72r').textContent=(+document.getElementById('c-r').value).toFixed(1)+'%';
+  document.getElementById('c-72y').textContent=(72/+document.getElementById('c-r').value).toFixed(1)+'년';
+  const maxY=Math.max(...compound)*1.05;
+  if(cChart)cChart.destroy();
+  cChart=new Chart(document.getElementById('cChart'),{type:'line',data:{labels,datasets:[{label:'복리',data:compound,borderColor:'#1a5cff',backgroundColor:'rgba(26,92,255,.07)',fill:true,tension:.35,pointRadius:0,borderWidth:2.5},{label:'단리',data:simple,borderColor:'#e2a04a',backgroundColor:'transparent',fill:false,tension:0,pointRadius:0,borderWidth:1.5,borderDash:[5,4]},{label:'원금',data:principal,borderColor:'#c0bdb6',backgroundColor:'transparent',fill:false,tension:0,pointRadius:0,borderWidth:1,borderDash:[3,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+Ws(ctx.raw)+'원'}}},scales:{x:{grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},maxTicksLimit:8}},y:{min:0,max:maxY,grid:{color:'rgba(0,0,0,.06)'},ticks:{font:{size:11},callback:v=>Ws(v)}}}}});
+}
+
+/* ═══ TAB 4 종합 ═══ */
+function updateHub(){
+  const{monthly}=calcTakehome(100000000);
+  document.getElementById('hub-netm').textContent=Ws(monthly)+'원/월';
+  const rev5=500000000,exp5=310000000,op5=rev5-exp5;
+  const t5=calcTaxBracket(Math.max(op5,0),CORP_TAX)*1.1;
+  document.getElementById('hub-netop').textContent=Ws(op5-t5)+'원';
+  const{gM}=gSimulate(calcTakehome(60000000).monthly-2000000,0,5,80,1000000000);
+  document.getElementById('hub-goal').textContent=gM>0?(Math.floor(gM/12)+'년 '+gM%12+'개월'):MAX_Y+'년+';
+  const P=1e8,r=0.07/100/12,Y=20,n=12;let comp=P*Math.pow(1+r*n,n*Y);
+  document.getElementById('hub-compound').textContent=fS(Math.round(comp));
+}
+
+/* ═══ INIT ═══ */
 sRender();
-cRender();
+pBuildSliders();pRender();pInited=true;
+gRender();gInited=true;
+cRender();cInited=true;
+updateHub();
 </script>
 </body>
 </html>
